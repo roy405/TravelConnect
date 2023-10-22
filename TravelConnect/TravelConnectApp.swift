@@ -6,15 +6,27 @@
 //
 
 import SwiftUI
+import Firebase
 
 @main
 struct TravelConnectApp: App {
-    let persistenceController = PersistenceController.shared
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @StateObject var viewModel = AuthViewModel()
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            if viewModel.isSignedIn {
+                ContentView(viewModel: viewModel)
+            } else {
+                LoginView(viewModel: viewModel)
+            }
         }
+    }
+}
+
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        FirebaseApp.configure()
+        return true
     }
 }
