@@ -12,11 +12,12 @@ struct ContentView: View {
 
     var body: some View {
         TabView {
-            // Tab 1
-            Text("Tab Content 1")
-                .tabItem {
-                    Label("Tab 1", systemImage: "1.circle")
-                }
+            NavigationView {
+                ConversationsListView(viewModel: ConversationsViewModel(authViewModel: viewModel))
+            }
+            .tabItem {
+                Label("Tab 1", systemImage: "1.circle")
+            }
 
             // Tab 2
             Text("Tab Content 2")

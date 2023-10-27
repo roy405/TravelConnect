@@ -7,12 +7,18 @@
 
 import Foundation
 import FirebaseAuth
+import FirebaseFirestore
+
 
 class AuthViewModel: ObservableObject {
     private var authStateDidChangeListenerHandle: AuthStateDidChangeListenerHandle?
     
     @Published var alertItem: AuthAlert?
     @Published var isSignedIn: Bool = false
+    
+    var currentUserEmail: String? {
+        return Auth.auth().currentUser?.email
+    }
 
     init() {
         addAuthListener()
@@ -65,4 +71,48 @@ class AuthViewModel: ObservableObject {
             print("Error signing out: %@", signOutError)
         }
     }
+    
+    func register(email: String, password: String, firstName: String, lastName: String, city: String, country: String, street: String, postcode: String, age: Int) {
+        Auth.auth().createUser(withEmail: email, password: password) { result, error in
+            if let error = error {
+                print("Error registering: \(error.localizedDescription)")
+                self.alertItem = .registrationError
+            } else {
+                guard let uid = result?.user.uid else { return }
+                
+                let user = User(id: uid, firstName: firstName, lastName: lastName, email: email, city: city, country: country, street: street, postcode: postcode, age: age)
+                
+                self.saveProfileData(user: user) { error in
+                    if let error = error {
+                        print("Error saving user data: \(error.localizedDescription)")
+                        self.alertItem = .registrationError
+                    } else {
+                        self.alertItem = .registrationSuccess
+                    }
+                }
+            }
+        }
+    }
+
+    private func saveProfileData(user: User, completion: @escaping (Error?) -> Void) {
+        let db = Firestore.firestore()
+        
+        let userData: [String: Any] = [
+            "id": user.id,
+            "firstName": user.firstName,
+            "lastName": user.lastName,
+            "email": user.email,
+            "city": user.city,
+            "country": user.country,
+            "street": user.street,
+            "postcode": user.postcode,
+            "age": user.age
+        ]
+        
+        db.collection("users").document(user.id).setData(userData) { error in
+            completion(error)
+        }
+    }
+
+
 }
