@@ -13,18 +13,27 @@ struct ChatView: View {
     var conversation: Conversation
 
     @State private var messageText: String = ""
+    @State private var showShareModal: Bool = false
     
-    // Assuming the current user's ID is fetched and stored in currentUserID in the ConversationsViewModel
     var currentUserID: String {
         viewModel.currentUserID
     }
 
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 1) {
+            // Title for the chat
+            NavigationLink(destination: ChatDetailView(chatName: conversation.displayName)) {
+                Text(conversation.displayName)
+                    .font(.title2)
+                    .padding(.vertical, 8)
+            }
+            .background(Color.gray.opacity(0.1))
+            .cornerRadius(10)
+            
             List(viewModel.messages) { message in
                 HStack {
                     if message.senderID == currentUserID {
-                        Spacer()  // Pushes the content to the right side
+                        Spacer()
                         Text(message.text)
                             .padding()
                             .background(Color.blue.opacity(0.2))
@@ -34,23 +43,38 @@ struct ChatView: View {
                             .padding()
                             .background(Color.gray.opacity(0.2))
                             .cornerRadius(15)
-                        Spacer()  // Pushes the content to the left side
+                        Spacer()
                     }
                 }
             }
             .padding(.bottom, 10)
 
-            HStack {
+            HStack(spacing: 10) {
+                // Button to bring up the share modal
+                Button(action: {
+                    showShareModal.toggle()
+                }) {
+                    Image(systemName: "plus")
+                        .frame(width: 36, height: 36)
+                        .background(Color.gray.opacity(0.2))
+                        .cornerRadius(18)
+                }
+                .sheet(isPresented: $showShareModal) {
+                    ShareModalView()
+                }
+                
                 TextField("Enter message", text: $messageText)
                     .padding(10)
                     .background(Color.gray.opacity(0.1))
                     .cornerRadius(15)
+                    .layoutPriority(1)
 
                 Button("Send") {
                     viewModel.sendMessage(conversation: conversation, text: messageText, senderID: Auth.auth().currentUser?.uid ?? "")
                     messageText = ""
                 }
-                .padding()
+                .frame(minWidth: 50)
+                .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
                 .background(Color.blue)
                 .foregroundColor(.white)
                 .cornerRadius(15)
@@ -63,4 +87,24 @@ struct ChatView: View {
         }
     }
 }
+
+struct ShareModalView: View {
+    var body: some View {
+        VStack {
+            // This is where you can design the options for your share modal
+            Text("Share Options Go Here")
+        }
+    }
+}
+
+struct ChatDetailView: View {
+    var chatName: String
+    
+    var body: some View {
+        // Placeholder for the chat details view
+        Text("Details for \(chatName)")
+    }
+}
+
+
 

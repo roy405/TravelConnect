@@ -9,7 +9,6 @@ import Foundation
 import FirebaseAuth
 import FirebaseFirestore
 
-
 class AuthViewModel: ObservableObject {
     private var authStateDidChangeListenerHandle: AuthStateDidChangeListenerHandle?
     
@@ -87,7 +86,15 @@ class AuthViewModel: ObservableObject {
                         print("Error saving user data: \(error.localizedDescription)")
                         self.alertItem = .registrationError
                     } else {
-                        self.alertItem = .registrationSuccess
+                        // Create an entry in the userInterests collection after the profile data has been saved
+                        self.saveUserInterestsData(email: email) { error in
+                            if let error = error {
+                                print("Error saving user interests data: \(error.localizedDescription)")
+                                self.alertItem = .registrationError
+                            } else {
+                                self.alertItem = .registrationSuccess
+                            }
+                        }
                     }
                 }
             }
@@ -113,6 +120,19 @@ class AuthViewModel: ObservableObject {
             completion(error)
         }
     }
-
-
+    
+    private func saveUserInterestsData(email: String, completion: @escaping (Error?) -> Void) {
+        let db = Firestore.firestore()
+        
+        // Create the initial data for the userInterests collection
+        let userInterestsData: [String: Any] = [
+            "email": email,
+            "interests": [String](),
+            "aboutMe": ""
+        ]
+        
+        db.collection("userInterests").document(email).setData(userInterestsData) { error in
+            completion(error)
+        }
+    }
 }

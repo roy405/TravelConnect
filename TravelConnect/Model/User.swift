@@ -17,9 +17,11 @@ struct User {
     let street: String
     let postcode: String
     let age: Int
+    var interests: [String]?
+    var aboutMe: String?
 
     // Direct initializer
-    init(id: String, firstName: String, lastName: String, email: String, city: String, country: String, street: String, postcode: String, age: Int) {
+    init(id: String, firstName: String, lastName: String, email: String, city: String, country: String, street: String, postcode: String, age: Int, interests: [String]? = nil, aboutMe: String? = nil) {
         self.id = id
         self.firstName = firstName
         self.lastName = lastName
@@ -29,6 +31,8 @@ struct User {
         self.street = street
         self.postcode = postcode
         self.age = age
+        self.interests = interests
+        self.aboutMe = aboutMe
     }
 
     // Convert Firestore Document to User
@@ -54,7 +58,8 @@ struct User {
         self.street = street
         self.postcode = postcode
         self.age = age
+        self.interests = documentData["interests"] as? [String]
+        self.aboutMe = documentData["aboutMe"] as? String
     }
 }
-
 

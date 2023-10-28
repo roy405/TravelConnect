@@ -50,6 +50,8 @@
 		1CB78F9A2AE432C50052882A /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB78F992AE432C50052882A /* FirebaseStorageCombine-Community */; };
 		1CB78F9C2AE43A180052882A /* AuthAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB78F9B2AE43A180052882A /* AuthAlert.swift */; };
 		1CB78F9E2AE43CA40052882A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB78F9D2AE43CA40052882A /* SettingsView.swift */; };
+		1CBEB2732AECE1A9005669EC /* UserProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBEB2722AECE1A9005669EC /* UserProfileViewModel.swift */; };
+		1CBEB2752AECE1CB005669EC /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBEB2742AECE1CB005669EC /* UserProfileView.swift */; };
 		1CDB07DE2AEA974A002A5EEA /* Conversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDB07DD2AEA974A002A5EEA /* Conversation.swift */; };
 		1CDB07E02AEA979D002A5EEA /* ConversationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDB07DF2AEA979D002A5EEA /* ConversationsViewModel.swift */; };
 		1CDB07E22AEA9832002A5EEA /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDB07E12AEA9832002A5EEA /* Message.swift */; };
@@ -73,6 +75,8 @@
 		1CB78F632AE42AA00052882A /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		1CB78F9B2AE43A180052882A /* AuthAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAlert.swift; sourceTree = "<group>"; };
 		1CB78F9D2AE43CA40052882A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		1CBEB2722AECE1A9005669EC /* UserProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewModel.swift; sourceTree = "<group>"; };
+		1CBEB2742AECE1CB005669EC /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
 		1CDB07DD2AEA974A002A5EEA /* Conversation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conversation.swift; sourceTree = "<group>"; };
 		1CDB07DF2AEA979D002A5EEA /* ConversationsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsViewModel.swift; sourceTree = "<group>"; };
 		1CDB07E12AEA9832002A5EEA /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
@@ -186,6 +190,7 @@
 				1CDB07E32AEA98BA002A5EEA /* ConversationListView.swift */,
 				1CDB07E52AEA990F002A5EEA /* ChatView.swift */,
 				1CDB07E72AEB21BD002A5EEA /* NewConversationView.swift */,
+				1CBEB2742AECE1CB005669EC /* UserProfileView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -195,6 +200,7 @@
 			children = (
 				1CB78F632AE42AA00052882A /* AuthViewModel.swift */,
 				1CDB07DF2AEA979D002A5EEA /* ConversationsViewModel.swift */,
+				1CBEB2722AECE1A9005669EC /* UserProfileViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -324,6 +330,7 @@
 			files = (
 				1CB78F9C2AE43A180052882A /* AuthAlert.swift in Sources */,
 				1CDB07E02AEA979D002A5EEA /* ConversationsViewModel.swift in Sources */,
+				1CBEB2732AECE1A9005669EC /* UserProfileViewModel.swift in Sources */,
 				1CDB07E82AEB21BD002A5EEA /* NewConversationView.swift in Sources */,
 				1CB3BFE82ADF9BE9006A6294 /* ContentView.swift in Sources */,
 				1CB78F602AE42A150052882A /* LoginView.swift in Sources */,
@@ -332,6 +339,7 @@
 				1CDB07E62AEA990F002A5EEA /* ChatView.swift in Sources */,
 				1CDB07E22AEA9832002A5EEA /* Message.swift in Sources */,
 				1CB78F642AE42AA00052882A /* AuthViewModel.swift in Sources */,
+				1CBEB2752AECE1CB005669EC /* UserProfileView.swift in Sources */,
 				1CB3BFE62ADF9BE9006A6294 /* TravelConnectApp.swift in Sources */,
 				1CB78F622AE42A280052882A /* RegistrationView.swift in Sources */,
 				1CB78F9E2AE43CA40052882A /* SettingsView.swift in Sources */,
