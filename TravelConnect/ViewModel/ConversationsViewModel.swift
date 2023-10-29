@@ -115,7 +115,7 @@ class ConversationsViewModel: ObservableObject {
     
     // Sends a message
     func sendMessage(conversation: Conversation, text: String? = nil, mediaURL: String? = nil, senderID: String) {
-        guard let text = text, !text.isEmpty || mediaURL != nil else {
+        guard (text != nil && !(text?.isEmpty ?? true)) || mediaURL != nil else {
             print("Cannot send an empty message or without media URL.")
             return
         }
@@ -280,10 +280,12 @@ class ConversationsViewModel: ObservableObject {
             } else {
                 storageRef.downloadURL { (url, error) in
                     guard let mainImageUrl = url?.absoluteString else {
+                        
                         completion(nil)
                         return
                     }
-                    
+                    print("Main Image URL: \(mainImageUrl)")
+
                     // Generate and upload the thumbnail
                     if let thumbnail = self.generateThumbnail(of: image, for: CGSize(width: 100, height: 100)),
                        let thumbnailData = thumbnail.jpegData(compressionQuality: 0.6) {

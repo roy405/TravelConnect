@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @ObservedObject var viewModel: AuthViewModel
+    @StateObject var userProfileViewModel = UserProfileViewModel(authViewModel: AuthViewModel())
 
     var body: some View {
         TabView {
@@ -16,21 +17,23 @@ struct ContentView: View {
                 ConversationsListView(viewModel: ConversationsViewModel(authViewModel: viewModel))
             }
             .tabItem {
-                Label("Tab 1", systemImage: "1.circle")
+                Label("Chats", systemImage: "bubble.right")
             }
 
             // Tab 2
-            Text("Tab Content 2")
-                .tabItem {
-                    Label("Tab 2", systemImage: "2.circle")
-                }
-
-            // Tab 3
-            Text("Tab Content 3")
-                .tabItem {
-                    Label("Tab 3", systemImage: "3.circle")
-                }
-
+            NavigationView {
+                WeatherForecastView(city: "Sydney")
+            }
+            .tabItem {
+                Label("Forecast", systemImage: "sun")
+            }
+            // Tab 3 - Recommendations
+            NavigationView {
+                RecommendationsView(viewModel: userProfileViewModel)
+            }
+            .tabItem {
+                Label("Recommendations", systemImage: "star")
+            }
             // Tab 4 - Settings
             NavigationView {
                 SettingsView(viewModel: viewModel)

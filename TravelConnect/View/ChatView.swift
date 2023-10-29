@@ -15,6 +15,11 @@ struct ChatView: View {
 
     @State private var messageText: String = ""
     @State private var showShareModal: Bool = false
+    @State private var navigateToShareModal: Bool = false
+    @State private var selectedImage: UIImage? = nil
+    @State private var navigationTrigger: Int? = nil
+    @State private var showImagePickerFromModal: Bool = false
+
     
     var currentUserID: String {
         viewModel.currentUserID
@@ -48,11 +53,15 @@ struct ChatView: View {
                 }
                 .sheet(isPresented: $showShareModal) {
                     ShareModalView(
-                        selectedImage: .constant(nil), // Or some binding to a UIImage?
-                        showImagePicker: .constant(false), // Or some binding to a Bool?
+                        selectedImage: $selectedImage,
+                        showImagePicker: $showImagePickerFromModal,
                         viewModel: viewModel,
                         conversation: conversation
                     )
+                }
+
+                .onTapGesture {
+                    navigateToShareModal.toggle()
                 }
                 
                 TextField("Enter message", text: $messageText)
@@ -80,41 +89,6 @@ struct ChatView: View {
     }
 }
 
-struct ShareModalView: View {
-    @Binding var selectedImage: UIImage?
-    @Binding var showImagePicker: Bool
-    var viewModel: ConversationsViewModel
-    var conversation: Conversation
-
-    var body: some View {
-        VStack {
-            Button("Pick Image") {
-                showImagePicker.toggle()
-            }
-            .sheet(isPresented: $showImagePicker) {
-                ImagePicker(image: $selectedImage, isShown: $showImagePicker)
-            }
-            
-            if let image = selectedImage {
-                Image(uiImage: image)
-                    .resizable()
-                    .frame(width: 200, height: 200)
-                    .padding()
-
-                Button("Send Image") {
-                    viewModel.uploadMediaToFirebase(image: image) { urlString in
-                        guard let urlString = urlString else {
-                            print("Failed to upload media.")
-                            return
-                        }
-                        // Now send the message with the media URL
-                        viewModel.sendMessage(conversation: conversation, text: nil, mediaURL: urlString, senderID: Auth.auth().currentUser?.uid ?? "")
-                    }
-                }
-            }
-        }
-    }
-}
 
 struct MessageView: View {
     var message: Message
@@ -122,13 +96,20 @@ struct MessageView: View {
 
     var body: some View {
         if let mediaURL = message.mediaURL, let url = URL(string: mediaURL) {
-            WebImage(url: url)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 100, height: 100)
-                .cornerRadius(15)
-                .padding()
-
+            HStack {
+                if message.senderID == currentUserID {
+                    Spacer()
+                }
+                WebImage(url: url)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 100, height: 100)
+                    .cornerRadius(15)
+                    .padding()
+                if message.senderID != currentUserID {
+                    Spacer()
+                }
+            }
         } else {
             HStack {
                 if message.senderID == currentUserID {
@@ -152,26 +133,28 @@ struct MessageView: View {
 
 
 
+
 struct ChatDetailView: View {
     var chatName: String
     @ObservedObject var viewModel: ConversationsViewModel  // Inject the viewModel
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .center, spacing: 20) {
+            VStack(alignment: .leading, spacing: 20) {
                 // Conversation Icon and Name
-                VStack {
+                HStack {
                     Image(systemName: "person.crop.circle")
                         .resizable()
                         .frame(width: 50, height: 50)
-                        .padding()
                     Text(chatName)
-                        .font(.headline)
-                        .padding()
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .padding(.leading)
                 }
+                .padding(.vertical)
 
                 // Photos
-                SectionView(title: "Photos", content: {
+                SectionView(title: "Photos") {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
                             ForEach(viewModel.messages, id: \.id) { message in
@@ -179,53 +162,59 @@ struct ChatDetailView: View {
                                     WebImage(url: url)
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
-                                        .frame(width: 100, height: 100)
+                                        .frame(width: 120, height: 120)
                                         .cornerRadius(15)
-                                        .padding()
+                                        .padding(.trailing, 15)
                                 }
                             }
                         }
                     }
-                })
+                }
 
                 // Collaboration
-                SectionView(title: "Collaboration", content: {
-                    HStack {
-                        Image(systemName: "person.2") // Placeholder for collaboration icon
-                        Text("Collaboration details here") // Placeholder text
+                SectionView(title: "Collaboration") {
+                    HStack(spacing: 10) {
+                        Image(systemName: "person.2")
+                            .frame(width: 25, height: 25)
+                        Text("Collaboration details here")
                     }
-                })
+                }
 
                 // Routes
-                SectionView(title: "Routes", content: {
-                    HStack {
-                        Image(systemName: "map") // Placeholder for route icon
-                        Text("Route details here") // Placeholder text
+                SectionView(title: "Routes") {
+                    HStack(spacing: 10) {
+                        Image(systemName: "map")
+                            .frame(width: 25, height: 25)
+                        Text("Route details here")
                     }
-                })
+                }
 
                 // Notes
-                SectionView(title: "Notes", content: {
-                    HStack {
-                        Image(systemName: "note.text") // Placeholder for note icon
-                        Text("Notes details here") // Placeholder text
+                SectionView(title: "Notes") {
+                    HStack(spacing: 10) {
+                        Image(systemName: "note.text")
+                            .frame(width: 25, height: 25)
+                        Text("Notes details here")
                     }
-                })
+                }
 
                 // Shared Files
-                SectionView(title: "Shared Files", content: {
-                    HStack {
-                        Image(systemName: "doc") // Placeholder for file icon
-                        Text("Shared file details here") // Placeholder text
+                SectionView(title: "Shared Files") {
+                    HStack(spacing: 10) {
+                        Image(systemName: "doc")
+                            .frame(width: 25, height: 25)
+                        Text("Shared file details here")
                     }
-                })
-
+                }
+                
                 Spacer()
             }
             .padding()
         }
     }
 }
+
+
 
 // Generic SectionView
 struct SectionView<Content: View>: View {
@@ -245,10 +234,13 @@ struct SectionView<Content: View>: View {
             content
         }
         .padding()
-        .background(Color.gray.opacity(0.1))
+        .background(Color(UIColor.systemGray5)) // Use a system background color
         .cornerRadius(10)
+        .padding(.bottom, 15)
     }
 }
+
+
 
 
 

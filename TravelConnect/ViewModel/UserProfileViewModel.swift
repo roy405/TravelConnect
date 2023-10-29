@@ -187,27 +187,31 @@ class UserProfileViewModel: ObservableObject {
         }
     }
     
-    func fetchCurrentUserInterests() -> [String] {
-        let email = authVM.currentUserEmail ?? ""
-        var userInterests: [String] = []
-
+    func fetchCurrentUserInterests(completion: @escaping ([String]) -> Void) {
+        guard let email = authVM.currentUserEmail, !email.isEmpty else {
+            print("No valid email found for the current user.")
+            completion([])
+            return
+        }
         let docRef = Firestore.firestore().collection("userInterests").document(email)
         docRef.getDocument { (document, error) in
             if let document = document, document.exists {
-                userInterests = document.data()?["interests"] as? [String] ?? []
+                let interests = document.data()?["interests"] as? [String] ?? []
+                completion(interests)
             } else {
                 print("Document does not exist")
+                completion([])
             }
         }
-        return userInterests
     }
-    
-    func fetchOtherUsersInterests() -> [String: [String]] {
-        var allInterests: [String: [String]] = [:]
 
+    
+    func fetchOtherUsersInterests(completion: @escaping ([String: [String]]) -> Void) {
+        var allInterests: [String: [String]] = [:]
         Firestore.firestore().collection("userInterests").getDocuments() { (querySnapshot, error) in
             guard let documents = querySnapshot?.documents else {
                 print("Error fetching documents: \(error!)")
+                completion([:])
                 return
             }
             for document in documents {
@@ -216,8 +220,8 @@ class UserProfileViewModel: ObservableObject {
                     allInterests[userEmail] = document.data()["interests"] as? [String] ?? []
                 }
             }
+            completion(allInterests)
         }
-        return allInterests
     }
 
 
