@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct UserProfileView: View {
+    @Environment(\.presentationMode) var presentationMode
     @ObservedObject var viewModel: UserProfileViewModel
     
     @State private var isEditing = false
@@ -20,12 +21,18 @@ struct UserProfileView: View {
     @State private var tempPostcode = ""
     @State private var tempAge = 0
     @State private var tempAboutMe = ""
-    @State private var tempInterests: [String] = []
+    @State private var originalInterests: [String] = [] // Data from ViewModel
+    @State private var tempInterests: [String] = []     // Temporary changes made by user
     @State private var currentInterest = ""
     
     @State private var showAlert = false
     @State private var alertMessage = ""
-    
+    @State private var selectedInterests: [String] = []
+    @State private var showingInterestsSheet = false
+    @State private var selectedInterest: String? = nil
+
+
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
@@ -37,12 +44,15 @@ struct UserProfileView: View {
                     displayFields
                 }
                 editSaveButton
+                resetPasswordButton
                 deleteButton
             }
             .padding([.top, .horizontal], 20)
         }
         .onAppear {
             loadUserDetails()
+            viewModel.loadInterestsFromJSON()
+            
         }
     }
     
@@ -74,26 +84,78 @@ struct UserProfileView: View {
             TextField("Postcode", text: $tempPostcode)
             Stepper("Age: \(tempAge)", value: $tempAge, in: 0...100)
             TextField("About Me", text: $tempAboutMe)
-            HStack {
-                TextField("Add Interest", text: $currentInterest)
-                Button(action: {
-                    tempInterests.append(currentInterest)
-                    currentInterest = ""
-                }) {
+
+            Button(action: {
+                self.showingInterestsSheet.toggle()
+            }) {
+                HStack {
+                    Text("Add Interest")
+                    Spacer()
                     Image(systemName: "plus.circle.fill")
                         .foregroundColor(.blue)
                 }
             }
-            List(tempInterests, id: \.self) { interest in
-                Text(interest)
+            .sheet(isPresented: $showingInterestsSheet) {
+                interestSelectionView
             }
-            .frame(height: CGFloat(tempInterests.count * 40)) // Adjust as needed
+
+            .padding(.vertical, 10)
+
+            if !tempInterests.isEmpty {
+                Text("Selected Interests:")
+                    .font(.headline)
+                    .padding(.top, 10)
+                ForEach(tempInterests, id: \.self) { interest in
+                    Text(interest)
+                        .font(.subheadline)
+                }
+            }
         }
         .padding(15)
         .background(Color(.systemGray6))
         .cornerRadius(10)
     }
     
+    var interestSelectionView: some View {
+        VStack {
+            HStack {
+                Spacer()
+                Button("Done") {
+                    self.showingInterestsSheet.toggle()
+                }
+                .padding()
+            }
+            List(viewModel.interestsData?.allCategories() ?? [], id: \.key) { category in
+                Section(header: Text(category.key.replacingOccurrences(of: "_", with: " "))) {
+                    ForEach(category.value, id: \.self) { interest in
+                        Button(action: {
+                            toggleInterest(interest: interest)
+                            print("Temp int \(tempInterests)")
+                        }) {
+                            HStack {
+                                Text(interest)
+                                Spacer()
+                                if tempInterests.contains(interest) {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    func toggleInterest(interest: String) {
+        if let index = tempInterests.firstIndex(of: interest) {
+            tempInterests.remove(at: index)
+        } else {
+            tempInterests.append(interest)
+        }
+    }
+
+
     var displayFields: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text("\(viewModel.user?.firstName ?? "John") \(viewModel.user?.lastName ?? "Doe")")
@@ -183,7 +245,28 @@ struct UserProfileView: View {
             Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
         }
     }
-
+    
+    var resetPasswordButton: some View {
+        Button(action: {
+            if let email = viewModel.user?.email {
+                AuthViewModel().resetPassword(email: email) { success, message in
+                    alertMessage = message
+                    showAlert = true
+                }
+            } else {
+                alertMessage = "Failed to get user email."
+                showAlert = true
+            }
+        }) {
+            Text("Reset Password")
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color.orange)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+        }
+        .padding(.top, 15)
+    }
     
     func loadUserDetails() {
         tempFirstName = viewModel.user?.firstName ?? ""
@@ -195,16 +278,35 @@ struct UserProfileView: View {
         tempPostcode = viewModel.user?.postcode ?? ""
         tempAge = viewModel.user?.age ?? 0
         tempAboutMe = viewModel.user?.aboutMe ?? ""
+        originalInterests = viewModel.user?.interests ?? []
+        tempInterests = originalInterests
+        
         tempInterests = viewModel.user?.interests ?? []
+        for category in viewModel.interestsData?.allCategories() ?? [] {
+            for interest in category.value {
+                if tempInterests.contains(interest) {
+                    selectedInterests.append(interest)
+                }
+            }
+        }
     }
 }
 
-
-
-
-
-
-
-
-
+extension Interests {
+    func allCategories() -> [Dictionary<String, [String]>.Element] {
+        return [
+            ("Nature & Outdoors", natureAndOutdoors),
+            ("Cultural & Historical", culturalAndHistorical),
+            ("Relaxation", relaxation),
+            ("Urban & Modern", urbanAndModern),
+            ("Adventurous & Extreme", adventurousAndExtreme),
+            ("Recreational & Sports", recreationalAndSports),
+            ("Educational", educational),
+            ("Eco & Responsible", ecoAndResponsible),
+            ("Luxury & Exclusive", luxuryAndExclusive),
+            ("Niche & Specific", nicheAndSpecific),
+            ("Family & Group", familyAndGroup)
+        ]
+    }
+}
 

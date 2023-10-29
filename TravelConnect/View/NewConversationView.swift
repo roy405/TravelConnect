@@ -16,8 +16,12 @@ struct NewConversationView: View {
     @Binding var showModal: Bool
     @ObservedObject var viewModel: ConversationsViewModel
     @State private var emails: [Email] = []
+    
+    @State private var showAlert = false
+    @State private var alertMessage = ""
 
     var body: some View {
+        
         NavigationView {
             VStack(spacing: 15) {
                 List {
@@ -60,14 +64,24 @@ struct NewConversationView: View {
                     
                     Button("Create Conversation") {
                         let lowercasedEmails = emails.map { $0.value.lowercased() }
-                        viewModel.startNewConversation(with: lowercasedEmails, isGroup: true)
-                        showModal = false
+                        viewModel.startNewConversation(with: lowercasedEmails, isGroup: true) { result in
+                            switch result {
+                            case .success:
+                                showModal = false
+                            case .failure(let error):
+                                alertMessage = error.localizedDescription
+                                showAlert = true
+                            }
+                        }
                     }
                     .buttonStyle(PlainButtonStyle())
                     .padding()
                     .background(Color.green)
                     .foregroundColor(.white)
                     .cornerRadius(8)
+                }
+                .alert(isPresented: $showAlert) {
+                    Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
                 }
 
             }

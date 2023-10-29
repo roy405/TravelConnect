@@ -135,4 +135,15 @@ class AuthViewModel: ObservableObject {
             completion(error)
         }
     }
+    
+    func resetPassword(email: String, completion: @escaping (Bool, String) -> Void) {
+        Auth.auth().sendPasswordReset(withEmail: email) { error in
+            if let error = error {
+                completion(false, error.localizedDescription)
+            } else {
+                completion(true, "A password reset email has been sent to \(email).")
+            }
+        }
+    }
+
 }

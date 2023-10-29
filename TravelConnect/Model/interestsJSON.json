@@ -1,0 +1,84 @@
+{
+   "Nature & Outdoors":[
+      "Hiking",
+      "Mountain biking",
+      "Birdwatching",
+      "Camping",
+      "Rock climbing",
+      "Scuba diving & snorkeling",
+      "Surfing",
+      "Whale watching",
+      "White-water rafting",
+      "Kayaking & canoeing",
+      "Wildlife safaris",
+      "Caving/spelunking",
+      "Paragliding",
+      "Skydiving"
+   ],
+   "Cultural & Historical":[
+      "Visiting museums",
+      "Attending local festivals & events",
+      "Historical site visits",
+      "Participating in local workshops",
+      "Watching traditional performances or dances",
+      "Culinary experiences",
+      "Wine tasting & vineyard tours"
+   ],
+   "Relaxation":[
+      "Beach lounging",
+      "Spa visits & wellness retreats",
+      "Yoga & meditation retreats",
+      "Cruise trips",
+      "Thermal baths & hot springs"
+   ],
+   "Urban & Modern":[
+      "Shopping",
+      "Nightlife",
+      "City tours",
+      "Attending theater & cinema",
+      "Dining in gourmet restaurants"
+   ],
+   "Adventurous & Extreme":[
+      "Desert safaris",
+      "Snowboarding & skiing",
+      "Bungee jumping",
+      "Sandboarding",
+      "Ziplining",
+      "Windsurfing",
+      "Sailing"
+   ],
+   "Recreational & Sports":[
+      "Golfing",
+      "Tennis",
+      "Fishing",
+      "Horseback riding"
+   ],
+   "Educational":[
+      "Language immersion programs",
+      "Photography tours & workshops",
+      "Astronomy/stargazing sessions"
+   ],
+   "Eco & Responsible":[
+      "Volunteering",
+      "Eco-tours & green travel",
+      "Agro-tourism"
+   ],
+   "Luxury & Exclusive":[
+      "Private island getaways",
+      "Luxury train journeys",
+      "Helicopter tours",
+      "Yacht charters"
+   ],
+   "Niche & Specific":[
+      "Pilgrimages & religious tours",
+      "Medical & wellness tourism",
+      "LGBTQ+ travel",
+      "Solo travel experiences"
+   ],
+   "Family & Group":[
+      "Amusement & theme parks",
+      "Aquariums & zoos",
+      "Family resorts",
+      "Group tours & guided excursions"
+   ]
+}

@@ -8,6 +8,7 @@
 import Foundation
 import FirebaseAuth
 import FirebaseFirestore
+import FirebaseStorage
 
 class ConversationsViewModel: ObservableObject {
     @Published var conversations = [Conversation]()
@@ -15,7 +16,7 @@ class ConversationsViewModel: ObservableObject {
     @Published var currentUserID: String = ""
     
     var authViewModel: AuthViewModel
-
+    
     init(authViewModel: AuthViewModel) {
         self.authViewModel = authViewModel
         self.fetchCurrentUserID(email: authViewModel.currentUserEmail ?? "")
@@ -23,7 +24,7 @@ class ConversationsViewModel: ObservableObject {
     }
     
     private var db = Firestore.firestore()
-
+    
     // Fetches conversations of a user
     func fetchConversations(email: String) {
         print("email : \(email)")
@@ -66,13 +67,9 @@ class ConversationsViewModel: ObservableObject {
             }
         }
     }
-
-
-
-
-
-
-
+    
+    
+    
     // Fetches messages of a conversation
     func fetchMessages(conversationCustomID: String) {
         print("Inside fetchMessages function.")
@@ -110,16 +107,22 @@ class ConversationsViewModel: ObservableObject {
                     data["id"] = queryDocumentSnapshot.documentID  // Add this line to insert the document ID into the data
                     return Message(documentData: data)
                 })
-
+                
             }
         }
     }
-
-
+    
+    
     // Sends a message
-    func sendMessage(conversation: Conversation, text: String, senderID: String) {
+    func sendMessage(conversation: Conversation, text: String? = nil, mediaURL: String? = nil, senderID: String) {
+        guard let text = text, !text.isEmpty || mediaURL != nil else {
+            print("Cannot send an empty message or without media URL.")
+            return
+        }
+
         print("About to send message to:", conversation.documentID)
-        let message = Message(id: "", conversationID: conversation.documentID, senderID: senderID, text: text, timestamp: Date())
+        
+        let message = Message(id: "", conversationID: conversation.documentID, senderID: senderID, text: text, timestamp: Date(), mediaURL: mediaURL)
         let messageData = message.toDictionary()
         
         db.collection("conversations").document(conversation.documentID).collection("messages").addDocument(data: messageData) { error in
@@ -128,25 +131,70 @@ class ConversationsViewModel: ObservableObject {
             }
         }
     }
-
-
+    
     // Function to start a new conversation
-    func startNewConversation(with emails: [String], isGroup: Bool) {
-        guard let currentUserEmail = authViewModel.currentUserEmail else { return }
+    func startNewConversation(with emails: [String], isGroup: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let currentUserEmail = authViewModel.currentUserEmail else {
+            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Current user email not found"])))
+            return
+        }
         let allMemberEmails = emails + [currentUserEmail]
-        var conversation = Conversation(memberEmails: allMemberEmails, currentUserEmail: currentUserEmail, displayName: "Default Group")
-        
-        let newConversationRef = db.collection("conversations").document() // create a reference to a new document
-        newConversationRef.setData(conversation.toDictionary()) { error in
-            if let error = error {
-                print("There was an error: \(error)")
-            } else {
-                conversation.documentID = newConversationRef.documentID
-                let newMessage = Message(id: "", conversationID: newConversationRef.documentID, senderID: "", text: "Conversation initiated", timestamp: Date())
-                newConversationRef.collection("messages").addDocument(data: newMessage.toDictionary())
+
+        // Check if the email exists in the Firestore users collection
+        let group = DispatchGroup()
+        var emailsNotFound: [String] = []
+
+        for email in emails {
+            group.enter()
+            db.collection("users").whereField("email", isEqualTo: email).getDocuments { (querySnapshot, error) in
+                if querySnapshot?.documents.isEmpty ?? true {
+                    emailsNotFound.append(email)
+                }
+                group.leave()
+            }
+        }
+
+        group.notify(queue: .main) {
+            if !emailsNotFound.isEmpty {
+                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Cannot create conversation. Following users not found: \(emailsNotFound.joined(separator: ", ")) you may invite them to the app. :)"])))
+                return
+            }
+
+            // Check if a conversation already exists with these emails
+            self.db.collection("conversations").whereField("memberEmails", arrayContains: currentUserEmail).getDocuments { (querySnapshot, error) in
+                if let conversations = querySnapshot?.documents {
+                    for conversationDoc in conversations {
+                        if let memberEmails = conversationDoc.data()["memberEmails"] as? [String], Set(memberEmails) == Set(allMemberEmails) {
+                            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "A conversation/group already exists with these members."])))
+                            return
+                        }
+                    }
+                }
+
+                // If all checks pass, proceed to create the new conversation
+                var conversation = Conversation(memberEmails: allMemberEmails, currentUserEmail: currentUserEmail, displayName: "Default Group")
+                
+                let newConversationRef = self.db.collection("conversations").document() // create a reference to a new document
+                newConversationRef.setData(conversation.toDictionary()) { error in
+                    if let error = error {
+                        completion(.failure(error))
+                    } else {
+                        conversation.documentID = newConversationRef.documentID
+                        let newMessage = Message(id: "", conversationID: newConversationRef.documentID, senderID: "", text: "Conversation initiated", timestamp: Date())
+                        newConversationRef.collection("messages").addDocument(data: newMessage.toDictionary()) { error in
+                            if let error = error {
+                                completion(.failure(error))
+                            } else {
+                                completion(.success(()))
+                            }
+                        }
+                    }
+                }
             }
         }
     }
+
+
     
     func fetchCurrentUserID(email: String) {
         print("this is the email we are getting \(email)")
@@ -186,6 +234,81 @@ class ConversationsViewModel: ObservableObject {
             let fullName = "\(firstName) \(lastName)"
             print("Found user name: \(fullName) for email: \(email)")
             completion(fullName)
+        }
+    }
+    
+    func doesConversationExist(with emails: [String], completion: @escaping (Bool) -> Void) {
+        db.collection("conversations").whereField("memberEmails", arrayContains: authViewModel.currentUserEmail ?? "").getDocuments { querySnapshot, error in
+            if let error = error {
+                print("Error checking conversation existence: \(error.localizedDescription)")
+                completion(false)
+                return
+            }
+
+            let existingConversations = querySnapshot?.documents.compactMap({ Conversation(documentID: $0.documentID, documentData: $0.data()) }) ?? []
+            let isExisting = existingConversations.contains { conversation in
+                Set(conversation.memberEmails) == Set(emails)
+            }
+            completion(isExisting)
+        }
+    }
+    
+    func doesEmailExist(email: String, completion: @escaping (Bool) -> Void) {
+        db.collection("users").whereField("email", isEqualTo: email).getDocuments { querySnapshot, error in
+            if let error = error {
+                print("Error checking email existence: \(error.localizedDescription)")
+                completion(false)
+                return
+            }
+            completion(!(querySnapshot?.documents.isEmpty ?? true))
+        }
+    }
+    
+    func uploadMediaToFirebase(image: UIImage, completion: @escaping (String?) -> Void) {
+        guard let data = image.jpegData(compressionQuality: 0.6) else {
+            completion(nil)
+            return
+        }
+        
+        let imageName = UUID().uuidString
+        let storageRef = Storage.storage().reference().child("chat_images/\(imageName).jpeg")
+        
+        storageRef.putData(data, metadata: nil) { (_, error) in
+            if let error = error {
+                print("Error uploading image: \(error)")
+                completion(nil)
+            } else {
+                storageRef.downloadURL { (url, error) in
+                    guard let mainImageUrl = url?.absoluteString else {
+                        completion(nil)
+                        return
+                    }
+                    
+                    // Generate and upload the thumbnail
+                    if let thumbnail = self.generateThumbnail(of: image, for: CGSize(width: 100, height: 100)),
+                       let thumbnailData = thumbnail.jpegData(compressionQuality: 0.6) {
+                        
+                        let thumbnailRef = Storage.storage().reference().child("chat_images/\(imageName)_thumbnail.jpeg")
+                        thumbnailRef.putData(thumbnailData, metadata: nil) { (_, error) in
+                            if let error = error {
+                                print("Error uploading thumbnail: \(error)")
+                            }
+                            // Continue with the main image URL, regardless of thumbnail upload success/failure
+                            completion(mainImageUrl)
+                        }
+                    } else {
+                        completion(mainImageUrl)
+                    }
+                }
+            }
+        }
+    }
+
+    
+    func generateThumbnail(of image: UIImage, for size: CGSize) -> UIImage? {
+        let renderer = UIGraphicsImageRenderer(size: size)
+        return renderer.image { (context) in
+            image.draw(in: CGRect(origin: .zero, size: size))
         }
     }
 

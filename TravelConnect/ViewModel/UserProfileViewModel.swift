@@ -11,9 +11,11 @@ import FirebaseAuth
 
 class UserProfileViewModel: ObservableObject {
     @Published var user: User? = nil
+    @Published var interestsData: Interests?
     
     private var db = Firestore.firestore()
     private var authVM: AuthViewModel
+    
     
     init(authViewModel: AuthViewModel) { 
         self.authVM = authViewModel
@@ -172,4 +174,51 @@ class UserProfileViewModel: ObservableObject {
                 }
             }
         }
+    
+    func loadInterestsFromJSON() {
+        guard let url = Bundle.main.url(forResource: "interestsJSON", withExtension: "json") else { return }
+        
+        do {
+            let data = try Data(contentsOf: url)
+            let decoder = JSONDecoder()
+            self.interestsData = try decoder.decode(Interests.self, from: data)
+        } catch {
+            print("Error decoding interests: \(error)")
+        }
+    }
+    
+    func fetchCurrentUserInterests() -> [String] {
+        let email = authVM.currentUserEmail ?? ""
+        var userInterests: [String] = []
+
+        let docRef = Firestore.firestore().collection("userInterests").document(email)
+        docRef.getDocument { (document, error) in
+            if let document = document, document.exists {
+                userInterests = document.data()?["interests"] as? [String] ?? []
+            } else {
+                print("Document does not exist")
+            }
+        }
+        return userInterests
+    }
+    
+    func fetchOtherUsersInterests() -> [String: [String]] {
+        var allInterests: [String: [String]] = [:]
+
+        Firestore.firestore().collection("userInterests").getDocuments() { (querySnapshot, error) in
+            guard let documents = querySnapshot?.documents else {
+                print("Error fetching documents: \(error!)")
+                return
+            }
+            for document in documents {
+                let userEmail = document.documentID
+                if userEmail != self.authVM.currentUserEmail {
+                    allInterests[userEmail] = document.data()["interests"] as? [String] ?? []
+                }
+            }
+        }
+        return allInterests
+    }
+
+
 }
