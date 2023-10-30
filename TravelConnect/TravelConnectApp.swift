@@ -12,13 +12,30 @@ import Firebase
 struct TravelConnectApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject var viewModel = AuthViewModel()
+    
+    @State private var showSplashScreen = true
 
     var body: some Scene {
         WindowGroup {
-            if viewModel.isSignedIn {
-                ContentView(viewModel: viewModel)
-            } else {
-                LoginView(viewModel: viewModel)
+            ZStack {
+                if showSplashScreen {
+                    LoadingScreen()
+                } else {
+                    if viewModel.isSignedIn {
+                        ContentView(viewModel: viewModel)
+                    } else {
+                        LoginView(viewModel: viewModel)
+                    }
+                }
+            }
+            .onAppear(perform: hideSplashScreen)
+        }
+    }
+    
+    func hideSplashScreen() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            withAnimation {
+                showSplashScreen = false
             }
         }
     }

@@ -17,10 +17,10 @@ struct LoginView: View {
         NavigationView {
             VStack(spacing: 30) {
                 // Placeholder for the company logo
-                Image("companyLogo")
+                Image("tConnect")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 150, height: 150)
+                    .frame(width: 300, height: 300)
                     .padding(.top, 40)
 
                 TextField("Email", text: $email)
