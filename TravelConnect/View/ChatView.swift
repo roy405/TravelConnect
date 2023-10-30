@@ -10,39 +10,42 @@ import FirebaseAuth
 import SDWebImageSwiftUI
 
 struct ChatView: View {
+    // Observable object to fetch and handle conversation data.
     @ObservedObject var viewModel: ConversationsViewModel
+    // Current chat conversation.
     var conversation: Conversation
-
+    
+    // State properties for UI interactions.
     @State private var messageText: String = ""
     @State private var showShareModal: Bool = false
     @State private var navigateToShareModal: Bool = false
     @State private var selectedImage: UIImage? = nil
     @State private var navigationTrigger: Int? = nil
     @State private var showImagePickerFromModal: Bool = false
-
     
+    // Property to get current user's ID.
     var currentUserID: String {
         viewModel.currentUserID
     }
-
+    
     var body: some View {
         VStack(spacing: 1) {
-            // Title for the chat
-            NavigationLink(destination: ChatDetailView(chatName: conversation.displayName, viewModel: viewModel)) {
+            // Navigation link to detailed chat view.
+            NavigationLink(destination: ChatDetailView(conversation: conversation, viewModel: viewModel)) {
                 Text(conversation.displayName)
                     .font(.title2)
                     .padding(.vertical, 8)
             }
             .background(Color.gray.opacity(0.1))
             .cornerRadius(10)
-            
+            // Display all the messages in the chat.
             List(viewModel.messages, id: \.id) { message in
                 MessageView(message: message, currentUserID: currentUserID)
             }
             .padding(.bottom, 10)
-
+            
             HStack(spacing: 10) {
-                // Button to bring up the share modal
+                // Button to display a modal to share content.
                 Button(action: {
                     showShareModal.toggle()
                 }) {
@@ -59,17 +62,17 @@ struct ChatView: View {
                         conversation: conversation
                     )
                 }
-
+                
                 .onTapGesture {
                     navigateToShareModal.toggle()
                 }
-                
+                // Text field to input a new message.
                 TextField("Enter message", text: $messageText)
                     .padding(10)
                     .background(Color.gray.opacity(0.1))
                     .cornerRadius(15)
                     .layoutPriority(1)
-
+                
                 Button("Send") {
                     viewModel.sendMessage(conversation: conversation, text: messageText, senderID: Auth.auth().currentUser?.uid ?? "")
                     messageText = ""
@@ -83,18 +86,18 @@ struct ChatView: View {
             .padding(.horizontal)
         }
         .onAppear {
-            print("Fetching messages for conversationID: \(conversation.id)")
             viewModel.fetchMessages(conversationCustomID: conversation.id)
         }
     }
 }
 
-
+// View representation of a single message.
 struct MessageView: View {
     var message: Message
     var currentUserID: String
-
+    
     var body: some View {
+        // If message contains an image, display.
         if let mediaURL = message.mediaURL, let url = URL(string: mediaURL) {
             HStack {
                 if message.senderID == currentUserID {
@@ -111,6 +114,7 @@ struct MessageView: View {
                 }
             }
         } else {
+            // If message contains text, display.
             HStack {
                 if message.senderID == currentUserID {
                     Spacer()
@@ -130,115 +134,6 @@ struct MessageView: View {
     }
 }
 
-
-
-
-
-struct ChatDetailView: View {
-    var chatName: String
-    @ObservedObject var viewModel: ConversationsViewModel  // Inject the viewModel
-
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                // Conversation Icon and Name
-                HStack {
-                    Image(systemName: "person.crop.circle")
-                        .resizable()
-                        .frame(width: 50, height: 50)
-                    Text(chatName)
-                        .font(.title)
-                        .fontWeight(.bold)
-                        .padding(.leading)
-                }
-                .padding(.vertical)
-
-                // Photos
-                SectionView(title: "Photos") {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack {
-                            ForEach(viewModel.messages, id: \.id) { message in
-                                if let mediaURL = message.mediaURL, let url = URL(string: mediaURL) {
-                                    WebImage(url: url)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 120, height: 120)
-                                        .cornerRadius(15)
-                                        .padding(.trailing, 15)
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // Collaboration
-                SectionView(title: "Collaboration") {
-                    HStack(spacing: 10) {
-                        Image(systemName: "person.2")
-                            .frame(width: 25, height: 25)
-                        Text("Collaboration details here")
-                    }
-                }
-
-                // Routes
-                SectionView(title: "Routes") {
-                    HStack(spacing: 10) {
-                        Image(systemName: "map")
-                            .frame(width: 25, height: 25)
-                        Text("Route details here")
-                    }
-                }
-
-                // Notes
-                SectionView(title: "Notes") {
-                    HStack(spacing: 10) {
-                        Image(systemName: "note.text")
-                            .frame(width: 25, height: 25)
-                        Text("Notes details here")
-                    }
-                }
-
-                // Shared Files
-                SectionView(title: "Shared Files") {
-                    HStack(spacing: 10) {
-                        Image(systemName: "doc")
-                            .frame(width: 25, height: 25)
-                        Text("Shared file details here")
-                    }
-                }
-                
-                Spacer()
-            }
-            .padding()
-        }
-    }
-}
-
-
-
-// Generic SectionView
-struct SectionView<Content: View>: View {
-    let title: String
-    let content: Content
-    
-    init(title: String, @ViewBuilder content: @escaping () -> Content) {
-        self.title = title
-        self.content = content()
-    }
-    
-    var body: some View {
-        VStack(alignment: .leading) {
-            Text(title)
-                .font(.headline)
-                .padding(.bottom, 10)
-            content
-        }
-        .padding()
-        .background(Color(UIColor.systemGray5)) // Use a system background color
-        .cornerRadius(10)
-        .padding(.bottom, 15)
-    }
-}
 
 
 

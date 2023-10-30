@@ -7,10 +7,15 @@
 
 import SwiftUI
 
+// This is the view responsible for displaying and editing the user's profile.
 struct UserProfileView: View {
+    // Environment property to dismiss the view
     @Environment(\.presentationMode) var presentationMode
+    // ViewModel that provides the data and operations related to the user profile.
     @ObservedObject var viewModel: UserProfileViewModel
     
+    // State properties that track changes in the UI.
+    // These properties store temporary changes before being saved
     @State private var isEditing = false
     @State private var tempFirstName = ""
     @State private var tempLastName = ""
@@ -25,14 +30,15 @@ struct UserProfileView: View {
     @State private var tempInterests: [String] = []     // Temporary changes made by user
     @State private var currentInterest = ""
     
+    // State properties for managing alerts, interest selections and modals.
     @State private var showAlert = false
     @State private var alertMessage = ""
     @State private var selectedInterests: [String] = []
     @State private var showingInterestsSheet = false
     @State private var selectedInterest: String? = nil
-
-
-
+    
+    
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
@@ -50,12 +56,20 @@ struct UserProfileView: View {
             .padding([.top, .horizontal], 20)
         }
         .onAppear {
-            loadUserDetails()
-            viewModel.loadInterestsFromJSON()
-            
+            // Load the user details and interests when the view appears.
+            do {
+                loadUserDetails()
+                try viewModel.loadInterestsFromJSON()
+            } catch {
+                // Handle the error, for instance, print the error or show a user alert.
+                print("Error: \(error.localizedDescription)")
+            }
         }
+
     }
     
+    // These computed properties break down the different
+    // sections of the UI for readability and modularity.
     var headerView: some View {
         Text("User Profile")
             .font(.largeTitle)
@@ -84,7 +98,7 @@ struct UserProfileView: View {
             TextField("Postcode", text: $tempPostcode)
             Stepper("Age: \(tempAge)", value: $tempAge, in: 0...100)
             TextField("About Me", text: $tempAboutMe)
-
+            
             Button(action: {
                 self.showingInterestsSheet.toggle()
             }) {
@@ -98,9 +112,9 @@ struct UserProfileView: View {
             .sheet(isPresented: $showingInterestsSheet) {
                 interestSelectionView
             }
-
+            
             .padding(.vertical, 10)
-
+            
             if !tempInterests.isEmpty {
                 Text("Selected Interests:")
                     .font(.headline)
@@ -145,8 +159,8 @@ struct UserProfileView: View {
             }
         }
     }
-
-
+    
+    
     func toggleInterest(interest: String) {
         if let index = tempInterests.firstIndex(of: interest) {
             tempInterests.remove(at: index)
@@ -154,8 +168,8 @@ struct UserProfileView: View {
             tempInterests.append(interest)
         }
     }
-
-
+    
+    
     var displayFields: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text("\(viewModel.user?.firstName ?? "John") \(viewModel.user?.lastName ?? "Doe")")
@@ -268,6 +282,7 @@ struct UserProfileView: View {
         .padding(.top, 15)
     }
     
+    // This function loads user details from the ViewModel and populates the temporary state properties.
     func loadUserDetails() {
         tempFirstName = viewModel.user?.firstName ?? ""
         tempLastName = viewModel.user?.lastName ?? ""
@@ -292,6 +307,7 @@ struct UserProfileView: View {
     }
 }
 
+// This extension is for organizing and accessing interests categories.
 extension Interests {
     func allCategories() -> [Dictionary<String, [String]>.Element] {
         return [

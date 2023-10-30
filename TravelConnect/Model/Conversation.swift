@@ -7,13 +7,16 @@
 
 import Foundation
 
+// Represents a conversation within the chat application.
 struct Conversation: Identifiable {
+    // Varialbles related to Conversation Model
     var documentID: String = ""
     var id: String
     var memberEmails: [String]
     var displayName: String
     var isGroup: Bool
     
+    // Initializer for creating a conversation from given parameters.
     init(documentID: String, id: String, memberEmails: [String], displayName: String, isGroup: Bool) {
         self.documentID = documentID
         self.id = id
@@ -22,6 +25,7 @@ struct Conversation: Identifiable {
         self.isGroup = isGroup
     }
     
+    // Initializer for creating a conversation based on member emails and current user's email.
     init(memberEmails: [String], currentUserEmail: String, displayName: String) {
         self.id = UUID().uuidString
         self.memberEmails = memberEmails
@@ -29,6 +33,7 @@ struct Conversation: Identifiable {
         self.isGroup = memberEmails.count > 2 || (memberEmails.count == 2 && !memberEmails.contains(currentUserEmail))
     }
     
+    // Initializer to create a conversation instance from document data.
     init?(documentID: String, documentData: [String: Any]) {
         guard let id = documentData["id"] as? String,
               let memberEmails = documentData["memberEmails"] as? [String],
@@ -36,15 +41,14 @@ struct Conversation: Identifiable {
               let isGroup = documentData["isGroup"] as? Bool else {
             return nil
         }
-        
         self.documentID = documentID
         self.id = id
         self.memberEmails = memberEmails
         self.displayName = displayName
         self.isGroup = isGroup
     }
-
-
+    
+    // Convert the conversation object to a dictionary.
     func toDictionary() -> [String: Any] {
         return [
             "id": id,
@@ -54,4 +58,3 @@ struct Conversation: Identifiable {
         ]
     }
 }
-

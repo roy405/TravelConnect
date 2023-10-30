@@ -8,33 +8,40 @@
 import Foundation
 import FirebaseFirestore
 import FirebaseAuth
+import Combine
 
+// `UserProfileViewModel` is responsible for fetching, updating, and deleting user profile and interests from Firestore.
 class UserProfileViewModel: ObservableObject {
+    // Observable variables for user and interests
     @Published var user: User? = nil
     @Published var interestsData: Interests?
+    @Published var fetchError: Error?
     
+    // Variables for db and auth view model
     private var db = Firestore.firestore()
     private var authVM: AuthViewModel
     
-    
-    init(authViewModel: AuthViewModel) { 
+    // Initializer
+    init(authViewModel: AuthViewModel) {
         self.authVM = authViewModel
     }
     
+    // Fetches the user's profile based on their email
     func fetchUserProfile(email: String) {
         db.collection("users").whereField("email", isEqualTo: email).getDocuments { (querySnapshot, error) in
             if let error = error {
-                print("Error finding user profile: \(error.localizedDescription)")
+                // Update the error publisher
+                self.fetchError = error
                 return
             }
             
             guard let userDocument = querySnapshot?.documents.first else {
-                print("User profile not found.")
+                self.fetchError = NSError(domain: "UserProfileViewModel", code: -1, userInfo: [NSLocalizedDescriptionKey: "User profile not found."])
                 return
             }
             
             if var user = User(documentData: userDocument.data()) {
-                // Now, fetch the interests and aboutMe
+                // Fetch the interests and aboutMe for the user
                 self.fetchUserInterests(email: email, completion: { interests, aboutMe in
                     user.interests = interests
                     user.aboutMe = aboutMe
@@ -43,17 +50,19 @@ class UserProfileViewModel: ObservableObject {
             }
         }
     }
-
+    
+    // Fetches the user's interests and 'about me' information
     func fetchUserInterests(email: String, completion: @escaping ([String], String) -> Void) {
         db.collection("userInterests").whereField("email", isEqualTo: email).getDocuments { (querySnapshot, error) in
             if let error = error {
-                print("Error finding user interests: \(error.localizedDescription)")
+                // Update the error publisher
+                self.fetchError = error
                 completion([], "")
                 return
             }
             
             guard let interestsDocument = querySnapshot?.documents.first else {
-                print("User interests not found.")
+                self.fetchError = NSError(domain: "UserProfileViewModel", code: -2, userInfo: [NSLocalizedDescriptionKey: "User interests not found."])
                 completion([], "")
                 return
             }
@@ -63,23 +72,24 @@ class UserProfileViewModel: ObservableObject {
             completion(interests, aboutMe)
         }
     }
-
     
+    // Function that handles updating the user's profile
     func updateProfile(firstName: String, lastName: String, email: String, city: String, country: String, street: String, postcode: String, age: Int, aboutMe: String, interests: [String]) {
         
+        // Getting both userscollcetiona nd interestscollections
         let usersCollection = db.collection("users")
         let userInterestsCollection = db.collection("userInterests")
         let query = usersCollection.whereField("email", isEqualTo: email)
         
+        //getting all for the current user using email
         query.getDocuments { (querySnapshot, error) in
             if let error = error {
-                print("Error finding user: \(error.localizedDescription)")
+                self.fetchError = error
                 return
             }
             
             if let document = querySnapshot?.documents.first {
                 let documentID = document.documentID
-                
                 // Update general user data
                 usersCollection.document(documentID).updateData([
                     "firstName": firstName,
@@ -101,7 +111,7 @@ class UserProfileViewModel: ObservableObject {
                         "interests": interests
                     ], merge: true) { error in
                         if let error = error {
-                            print("Error updating user interests and about me: \(error.localizedDescription)")
+                            self.fetchError = error
                             return
                         }
                         
@@ -109,109 +119,116 @@ class UserProfileViewModel: ObservableObject {
                     }
                 }
             } else {
-                print("User not found")
+                self.fetchError = NSError(domain: "UserProfileViewModel", code: -3, userInfo: [NSLocalizedDescriptionKey: "User not found."])
             }
         }
     }
-
-
+    
+    // Function that handle Deletion of a user's Profile
     func deleteProfile(completion: @escaping (Error?) -> Void) {
-            guard let email = Auth.auth().currentUser?.email else {
-                completion(NSError(domain: "AppErrorDomain", code: -1, userInfo: [NSLocalizedDescriptionKey: "Current user email not found."]))
+        guard let email = Auth.auth().currentUser?.email else {
+            completion(NSError(domain: "AppErrorDomain", code: -1, userInfo: [NSLocalizedDescriptionKey: "Current user email not found."]))
+            return
+        }
+        
+        // Delete user from FirebaseAuth
+        Auth.auth().currentUser?.delete { authError in
+            if let authError = authError {
+                completion(authError)
                 return
             }
             
-            // 1. Delete user from FirebaseAuth
-            Auth.auth().currentUser?.delete { authError in
-                if let authError = authError {
-                    completion(authError)
+            let db = Firestore.firestore()
+            
+            // Delete user from Firestore 'users' collection
+            db.collection("users").whereField("email", isEqualTo: email).getDocuments { (snapshot, error) in
+                if let error = error {
+                    completion(error)
                     return
                 }
                 
-                let db = Firestore.firestore()
+                guard let doc = snapshot?.documents.first else {
+                    completion(nil)
+                    return
+                }
                 
-                // 2. Delete user from Firestore 'users' collection
-                db.collection("users").whereField("email", isEqualTo: email).getDocuments { (snapshot, error) in
+                db.collection("users").document(doc.documentID).delete { error in
                     if let error = error {
                         completion(error)
                         return
                     }
                     
-                    guard let doc = snapshot?.documents.first else {
-                        completion(nil)
-                        return
-                    }
-                    
-                    db.collection("users").document(doc.documentID).delete { error in
+                    // Delete user from Firestore 'userInterests' collection
+                    db.collection("userInterests").whereField("email", isEqualTo: email).getDocuments { (snapshot, error) in
                         if let error = error {
                             completion(error)
                             return
                         }
                         
-                        // 3. Delete user from Firestore 'userInterests' collection
-                        db.collection("userInterests").whereField("email", isEqualTo: email).getDocuments { (snapshot, error) in
+                        guard let doc = snapshot?.documents.first else {
+                            completion(nil)
+                            return
+                        }
+                        
+                        db.collection("userInterests").document(doc.documentID).delete { error in
                             if let error = error {
                                 completion(error)
                                 return
                             }
                             
-                            guard let doc = snapshot?.documents.first else {
-                                completion(nil)
-                                return
-                            }
-                            
-                            db.collection("userInterests").document(doc.documentID).delete { error in
-                                if let error = error {
-                                    completion(error)
-                                    return
-                                }
-                                
-                                self.authVM.logout()
-                                completion(nil)
-                            }
+                            self.authVM.logout()
+                            completion(nil)
                         }
                     }
                 }
             }
         }
+    }
     
-    func loadInterestsFromJSON() {
-        guard let url = Bundle.main.url(forResource: "interestsJSON", withExtension: "json") else { return }
+    // Loads interests from a bundled JSON file
+    func loadInterestsFromJSON() throws {
+        guard let url = Bundle.main.url(forResource: "interestsJSON", withExtension: "json") else {
+            throw AppError.missingResource
+        }
         
         do {
             let data = try Data(contentsOf: url)
             let decoder = JSONDecoder()
             self.interestsData = try decoder.decode(Interests.self, from: data)
-        } catch {
-            print("Error decoding interests: \(error)")
+        } catch let decodingError {
+            throw AppError.decodingError(decodingError)
         }
     }
     
-    func fetchCurrentUserInterests(completion: @escaping ([String]) -> Void) {
+    // Fetches the interests of the currently logged in user
+    func fetchCurrentUserInterests(completion: @escaping (Result<[String], AppError>) -> Void) {
         guard let email = authVM.currentUserEmail, !email.isEmpty else {
-            print("No valid email found for the current user.")
-            completion([])
+            completion(.failure(.invalidCurrentUserEmail))
             return
         }
         let docRef = Firestore.firestore().collection("userInterests").document(email)
         docRef.getDocument { (document, error) in
             if let document = document, document.exists {
                 let interests = document.data()?["interests"] as? [String] ?? []
-                completion(interests)
+                completion(.success(interests))
+            } else if let error = error {
+                completion(.failure(.firestoreError(error)))
             } else {
-                print("Document does not exist")
-                completion([])
+                completion(.failure(.documentDoesNotExist))
             }
         }
     }
-
     
-    func fetchOtherUsersInterests(completion: @escaping ([String: [String]]) -> Void) {
+    // Fetches the interests of all users except the currently logged in user
+    func fetchOtherUsersInterests(completion: @escaping (Result<[String: [String]], AppError>) -> Void) {
         var allInterests: [String: [String]] = [:]
         Firestore.firestore().collection("userInterests").getDocuments() { (querySnapshot, error) in
             guard let documents = querySnapshot?.documents else {
-                print("Error fetching documents: \(error!)")
-                completion([:])
+                if let error = error {
+                    completion(.failure(.firestoreError(error)))
+                } else {
+                    completion(.failure(.documentDoesNotExist))
+                }
                 return
             }
             for document in documents {
@@ -220,9 +237,7 @@ class UserProfileViewModel: ObservableObject {
                     allInterests[userEmail] = document.data()["interests"] as? [String] ?? []
                 }
             }
-            completion(allInterests)
+            completion(.success(allInterests))
         }
     }
-
-
 }

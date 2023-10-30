@@ -10,124 +10,111 @@ import FirebaseAuth
 import FirebaseFirestore
 import FirebaseStorage
 
+// The `ConversationsViewModel` class handles the logic related to conversations and messages.
 class ConversationsViewModel: ObservableObject {
-    @Published var conversations = [Conversation]()
-    @Published var messages: [Message] = []
-    @Published var currentUserID: String = ""
-    
+    // Observable properties
+    @Published var conversations = [Conversation]()   // List of conversations for the user
+    @Published var messages: [Message] = []           // List of messages in a selected conversation
+    @Published var currentUserID: String = ""         // ID of the current user
+    @Published var fetchError: Error?                 // Error state to relay to the view
+    @Published var sendMessageError: Error?           // Error state to relay message error to the view
     var authViewModel: AuthViewModel
     
+    // Initializer for the ViewModel
     init(authViewModel: AuthViewModel) {
         self.authViewModel = authViewModel
-        self.fetchCurrentUserID(email: authViewModel.currentUserEmail ?? "")
-        print("ezman2 : \(currentUserID)")
+        fetchCurrentUserID(email: authViewModel.currentUserEmail ?? "") { userID in }
     }
     
+    // Firebase Firestore reference
     private var db = Firestore.firestore()
     
-    // Fetches conversations of a user
+    // Fetches the conversations that the user is a part of.
     func fetchConversations(email: String) {
-        print("email : \(email)")
-        
         db.collection("conversations").whereField("memberEmails", arrayContains: email).addSnapshotListener { querySnapshot, error in
+            // Handle any errors in fetching conversations
             if let error = error {
-                print("Error fetching conversations: \(error.localizedDescription)")
-                return
-            }
-            guard let documents = querySnapshot?.documents else {
-                print("No conversations found.")
+                self.fetchError = error
                 return
             }
             
-            print("Number of conversations fetched: \(documents.count)")
+            guard let documents = querySnapshot?.documents else {
+                self.fetchError = NSError(domain: "ConversationsViewModel", code: -1, userInfo: [NSLocalizedDescriptionKey: "No conversations found."])
+                return
+            }
             
             var fetchedConversations: [Conversation] = []
             
-            let group = DispatchGroup()
-            
-            documents.forEach { queryDocumentSnapshot in
-                group.enter()
-                
+            // Iterate through each conversation document and create a Conversation object
+            for queryDocumentSnapshot in documents {
                 guard let conversation = Conversation(documentID: queryDocumentSnapshot.documentID, documentData: queryDocumentSnapshot.data()) else {
-                    group.leave()
-                    return
+                    self.fetchError = NSError(domain: "ConversationsViewModel", code: -2, userInfo: [NSLocalizedDescriptionKey: "Failed to process conversation data."])
+                    continue
                 }
-                print("Successfully created conversation object: \(conversation)")
-                
-                self.updateConversationDisplayName(conversation: conversation) { updatedConversation in
-                    fetchedConversations.append(updatedConversation)
-                    print("Updated conversation added: \(updatedConversation)")
-                    group.leave()
-                }
+                fetchedConversations.append(conversation)
             }
             
-            group.notify(queue: .main) {
-                self.conversations = fetchedConversations
-                print("All conversations processed. Total: \(fetchedConversations.count)")
-            }
+            // Assign to the observable property
+            self.conversations = fetchedConversations
         }
     }
-    
-    
+
     
     // Fetches messages of a conversation
     func fetchMessages(conversationCustomID: String) {
-        print("Inside fetchMessages function.")
-        
-        // First, find the document with the matching custom 'id'
+        // Finding  the document with the matching custom 'id'
         db.collection("conversations").whereField("id", isEqualTo: conversationCustomID).getDocuments { (querySnapshot, error) in
             if let error = error {
-                print("Error finding matching conversation: \(error.localizedDescription)")
+                self.fetchError = error  // Update error state
                 return
             }
             
-            // If found, get the Firestore document ID
             guard let document = querySnapshot?.documents.first else {
-                print("No matching conversation found.")
+                self.fetchError = NSError(domain: "ConversationsViewModel", code: -1, userInfo: [NSLocalizedDescriptionKey: "No matching conversation found."])  // Update error state
                 return
             }
             
             let firestoreDocumentID = document.documentID
             
-            // Then fetch its messages using the Firestore document ID
+            // Fetch the messages associated with that conversation
             self.db.collection("conversations").document(firestoreDocumentID).collection("messages").order(by: "timestamp", descending: false).addSnapshotListener { (querySnapshot, error) in
                 if let error = error {
-                    print("Error fetching messages: \(error.localizedDescription)")
+                    self.fetchError = error  // Update error state
                     return
                 }
                 
                 guard let messages = querySnapshot?.documents else {
-                    print("No messages found.")
+                    self.fetchError = NSError(domain: "ConversationsViewModel", code: -2, userInfo: [NSLocalizedDescriptionKey: "No messages found."])  // Update error state
                     return
                 }
                 
+                // Map Firestore documents to Message objects
                 self.messages = messages.compactMap({ queryDocumentSnapshot -> Message? in
                     var data = queryDocumentSnapshot.data() as [String: Any]
-                    print("Received message data: \(data)")
-                    data["id"] = queryDocumentSnapshot.documentID  // Add this line to insert the document ID into the data
+                    data["id"] = queryDocumentSnapshot.documentID
                     return Message(documentData: data)
                 })
-                
             }
         }
     }
     
     
-    // Sends a message
+    // Sends a message in a given conversation.
     func sendMessage(conversation: Conversation, text: String? = nil, mediaURL: String? = nil, senderID: String) {
+        // Check for valid message content (text or media)
         guard (text != nil && !(text?.isEmpty ?? true)) || mediaURL != nil else {
-            print("Cannot send an empty message or without media URL.")
+            sendMessageError = NSError(domain: "ConversationsViewModel", code: -3, userInfo: [NSLocalizedDescriptionKey: "Cannot send an empty message or without media URL."])
             return
         }
-
-        print("About to send message to:", conversation.documentID)
         
         let message = Message(id: "", conversationID: conversation.documentID, senderID: senderID, text: text, timestamp: Date(), mediaURL: mediaURL)
         let messageData = message.toDictionary()
         
+        // Add message to Firestore
         db.collection("conversations").document(conversation.documentID).collection("messages").addDocument(data: messageData) { error in
             if let error = error {
                 print("There was an error: \(error)")
+                self.sendMessageError = error  // Update error state
             }
         }
     }
@@ -139,11 +126,11 @@ class ConversationsViewModel: ObservableObject {
             return
         }
         let allMemberEmails = emails + [currentUserEmail]
-
+        
         // Check if the email exists in the Firestore users collection
         let group = DispatchGroup()
         var emailsNotFound: [String] = []
-
+        
         for email in emails {
             group.enter()
             db.collection("users").whereField("email", isEqualTo: email).getDocuments { (querySnapshot, error) in
@@ -153,13 +140,13 @@ class ConversationsViewModel: ObservableObject {
                 group.leave()
             }
         }
-
+        
         group.notify(queue: .main) {
             if !emailsNotFound.isEmpty {
                 completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Cannot create conversation. Following users not found: \(emailsNotFound.joined(separator: ", ")) you may invite them to the app. :)"])))
                 return
             }
-
+            
             // Check if a conversation already exists with these emails
             self.db.collection("conversations").whereField("memberEmails", arrayContains: currentUserEmail).getDocuments { (querySnapshot, error) in
                 if let conversations = querySnapshot?.documents {
@@ -170,93 +157,85 @@ class ConversationsViewModel: ObservableObject {
                         }
                     }
                 }
-
+                
                 // If all checks pass, proceed to create the new conversation
                 var conversation = Conversation(memberEmails: allMemberEmails, currentUserEmail: currentUserEmail, displayName: "Default Group")
                 
-                let newConversationRef = self.db.collection("conversations").document() // create a reference to a new document
-                newConversationRef.setData(conversation.toDictionary()) { error in
-                    if let error = error {
-                        completion(.failure(error))
-                    } else {
-                        conversation.documentID = newConversationRef.documentID
-                        let newMessage = Message(id: "", conversationID: newConversationRef.documentID, senderID: "", text: "Conversation initiated", timestamp: Date())
-                        newConversationRef.collection("messages").addDocument(data: newMessage.toDictionary()) { error in
-                            if let error = error {
-                                completion(.failure(error))
-                            } else {
-                                completion(.success(()))
-                            }
+                self.updateConversationDisplayName(conversation: conversation) { updatedConversation in
+                    conversation = updatedConversation
+
+                    // Continue with the rest of the logic
+                    let newConversationRef = self.db.collection("conversations").document()
+                    newConversationRef.setData(conversation.toDictionary()) { error in
+                        if let error = error {
+                            completion(.failure(error))
+                        } else {
+                            completion(.success(()))
                         }
                     }
                 }
             }
         }
     }
-
-
     
-    func fetchCurrentUserID(email: String) {
-        print("this is the email we are getting \(email)")
+    // Fetches the user ID for a given email address.
+    func fetchCurrentUserID(email: String, completion: @escaping (Result<String, Error>) -> Void) {
         db.collection("users").whereField("email", isEqualTo: email).getDocuments { (querySnapshot, error) in
-            if let error = error {
-                print("Error finding user: \(error.localizedDescription)")
+            if error != nil {
+                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "An error occurred while fetching the user ID."])))
                 return
             }
             
             guard let userDocument = querySnapshot?.documents.first, let userID = userDocument.data()["id"] as? String else {
-                print("User not found.")
+                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "User ID not found for provided email."])))
                 return
             }
             
             self.currentUserID = userID
-            print("THIS IS ID \(self.currentUserID)")
+            completion(.success(userID))
         }
     }
     
-    func fetchUserName(for email: String, completion: @escaping (String?) -> Void) {
-        print("Fetching user name for email: \(email)")
+    // Fetches the full name for a given email address.
+    func fetchUserName(for email: String, completion: @escaping (Result<String, Error>) -> Void) {
         db.collection("users").whereField("email", isEqualTo: email).getDocuments { (querySnapshot, error) in
-            if let error = error {
-                print("Error finding user: \(error.localizedDescription)")
-                completion(nil)
+            if error != nil {
+                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "An error occurred while fetching the user name."])))
                 return
             }
             
             guard let userDocument = querySnapshot?.documents.first,
                   let firstName = userDocument.data()["firstName"] as? String,
                   let lastName = userDocument.data()["lastName"] as? String else {
-                print("User or user's names not found for email: \(email)")
-                completion(nil)
+                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "User's name not found for provided email."])))
                 return
             }
             
             let fullName = "\(firstName) \(lastName)"
-            print("Found user name: \(fullName) for email: \(email)")
-            completion(fullName)
+            completion(.success(fullName))
         }
     }
     
-    func doesConversationExist(with emails: [String], completion: @escaping (Bool) -> Void) {
+    // Checks if a conversation already exists with the given member emails.
+    func doesConversationExist(with emails: [String], completion: @escaping (Result<Bool, Error>) -> Void) {
         db.collection("conversations").whereField("memberEmails", arrayContains: authViewModel.currentUserEmail ?? "").getDocuments { querySnapshot, error in
-            if let error = error {
-                print("Error checking conversation existence: \(error.localizedDescription)")
-                completion(false)
+            if error != nil {
+                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "An error occurred while checking the conversation's existence."])))
                 return
             }
-
+            
             let existingConversations = querySnapshot?.documents.compactMap({ Conversation(documentID: $0.documentID, documentData: $0.data()) }) ?? []
             let isExisting = existingConversations.contains { conversation in
                 Set(conversation.memberEmails) == Set(emails)
             }
-            completion(isExisting)
+            completion(.success(isExisting))
         }
     }
     
+    // Function to check if a certain email exists in the users collection
     func doesEmailExist(email: String, completion: @escaping (Bool) -> Void) {
         db.collection("users").whereField("email", isEqualTo: email).getDocuments { querySnapshot, error in
-            if let error = error {
-                print("Error checking email existence: \(error.localizedDescription)")
+            if error != nil {
                 completion(false)
                 return
             }
@@ -264,6 +243,7 @@ class ConversationsViewModel: ObservableObject {
         }
     }
     
+    // Function to upload media to firebase storage for the chat functionality (Conversations/Trips)
     func uploadMediaToFirebase(image: UIImage, completion: @escaping (String?) -> Void) {
         guard let data = image.jpegData(compressionQuality: 0.6) else {
             completion(nil)
@@ -274,22 +254,18 @@ class ConversationsViewModel: ObservableObject {
         let storageRef = Storage.storage().reference().child("chat_images/\(imageName).jpeg")
         
         storageRef.putData(data, metadata: nil) { (_, error) in
-            if let error = error {
-                print("Error uploading image: \(error)")
+            if error != nil {
                 completion(nil)
             } else {
                 storageRef.downloadURL { (url, error) in
                     guard let mainImageUrl = url?.absoluteString else {
-                        
                         completion(nil)
                         return
                     }
-                    print("Main Image URL: \(mainImageUrl)")
-
+                    
                     // Generate and upload the thumbnail
                     if let thumbnail = self.generateThumbnail(of: image, for: CGSize(width: 100, height: 100)),
                        let thumbnailData = thumbnail.jpegData(compressionQuality: 0.6) {
-                        
                         let thumbnailRef = Storage.storage().reference().child("chat_images/\(imageName)_thumbnail.jpeg")
                         thumbnailRef.putData(thumbnailData, metadata: nil) { (_, error) in
                             if let error = error {
@@ -305,54 +281,54 @@ class ConversationsViewModel: ObservableObject {
             }
         }
     }
-
     
+    // Function to generate a thumbnail of the uploaded picture
     func generateThumbnail(of image: UIImage, for size: CGSize) -> UIImage? {
         let renderer = UIGraphicsImageRenderer(size: size)
         return renderer.image { (context) in
             image.draw(in: CGRect(origin: .zero, size: size))
         }
     }
-
     
+    // Function to update conversation display name based on number of people
     func updateConversationDisplayName(conversation: Conversation, completion: @escaping (Conversation) -> Void) {
         print("Updating display name for conversation: \(conversation)")
         var updatedConversation = conversation
         let emails = conversation.memberEmails
-
+        
         // If it's a 2-person chat
         if emails.count == 2 {
             for email in emails {
                 if email != authViewModel.currentUserEmail {  // Ensure it's not the current user
-                    fetchUserName(for: email) { name in
-                        guard let name = name else {
-                            print("Name not found for email: \(email)")
-                            return
+                    fetchUserName(for: email) { result in
+                        switch result {
+                        case .success(let name):
+                            updatedConversation.displayName = name
+                            completion(updatedConversation)
+                        case .failure(let error):
+                            print("Error fetching name for email \(email): \(error.localizedDescription)")
                         }
-                        updatedConversation.displayName = name
-                        completion(updatedConversation)
                     }
                     break
                 }
             }
         } else if emails.count > 2 {
             var names: [String] = []
-
             let group = DispatchGroup()
             for email in emails {
                 if email != authViewModel.currentUserEmail {
                     group.enter()
-                    fetchUserName(for: email) { name in
-                        if let name = name {
+                    fetchUserName(for: email) { result in
+                        switch result {
+                        case .success(let name):
                             names.append(name.components(separatedBy: " ")[0])  // Add only the first name
-                        } else {
-                            print("Name not found for email: \(email)")
+                        case .failure(let error):
+                            print("Error fetching name for email \(email): \(error.localizedDescription)")
                         }
                         group.leave()
                     }
                 }
             }
-
             group.notify(queue: .main) {
                 if updatedConversation.displayName == "Default Group" || updatedConversation.displayName.isEmpty {
                     updatedConversation.displayName = names.joined(separator: ", ")
@@ -368,30 +344,40 @@ class ConversationsViewModel: ObservableObject {
 
 
 extension ConversationsViewModel {
-    
-    // Change the name of a conversation (especially useful for groups)
-    func updateConversationName(conversation: Conversation, newName: String) {
-        db.collection("conversations").document(conversation.id).updateData([
-            "displayName": newName
-        ]) { error in
+    // Updates the display name of a conversation.
+    func updateConversationName(conversation: Conversation, newName: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        db.collection("conversations").whereField("id", isEqualTo: conversation.id).getDocuments { (snapshot, error) in
             if let error = error {
-                print("Error updating name: \(error)")
-            } else {
-                print("Name successfully updated!")
+                completion(.failure(error))
+                return
+            }
+            guard let documents = snapshot?.documents, let document = documents.first else {
+                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No matching conversation found"])))
+                return
+            }
+            document.reference.updateData([
+                "displayName": newName
+            ]) { error in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(()))
+                }
             }
         }
     }
-    
-    // Convert a conversation to a group
-    func convertToGroup(conversation: Conversation) {
+
+    // Converts a single conversation into a group.
+    func convertToGroup(conversation: Conversation, completion: @escaping (Result<Void, Error>) -> Void) {
         db.collection("conversations").document(conversation.id).updateData([
             "isGroup": true
         ]) { error in
             if let error = error {
-                print("Error converting to group: \(error)")
+                completion(.failure(error))
             } else {
-                print("Successfully converted to group!")
+                completion(.success(()))
             }
         }
     }
 }
+

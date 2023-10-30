@@ -7,29 +7,34 @@
 
 import SwiftUI
 
+// Represents an email data structure.
 struct Email: Identifiable {
-    var id = UUID()
-    var value: String
+    var id = UUID()   // Unique identifier for each email.
+    var value: String // Email value.
 }
 
+// A SwiftUI view to start a new conversation.
 struct NewConversationView: View {
-    @Binding var showModal: Bool
-    @ObservedObject var viewModel: ConversationsViewModel
-    @State private var emails: [Email] = []
+    @Binding var showModal: Bool    // Binding to control the visibility of the modal.
+    @ObservedObject var viewModel: ConversationsViewModel // ViewModel to handle conversations-related operations.
+    @State private var emails: [Email] = []  // Array to store email entries.
     
-    @State private var showAlert = false
-    @State private var alertMessage = ""
-
+    @State private var showAlert = false    // State to control the visibility of an alert.
+    @State private var alertMessage = ""    // Message to be displayed in the alert.
+    
     var body: some View {
-        
         NavigationView {
             VStack(spacing: 15) {
+                
+                // List to display all email entries.
                 List {
                     ForEach(emails) { email in
                         HStack {
+                            // Editable text field for email.
                             TextField("Enter email", text: Binding(
                                 get: { email.value },
                                 set: { newValue in
+                                    // Update the value of the email.
                                     if let index = emails.firstIndex(where: { $0.id == email.id }) {
                                         emails[index].value = newValue
                                     }
@@ -37,6 +42,7 @@ struct NewConversationView: View {
                             ))
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             
+                            // Button to delete the email entry.
                             Button(action: {
                                 withAnimation {
                                     self.deleteEmail(email: email)
@@ -49,8 +55,10 @@ struct NewConversationView: View {
                     }
                 }
                 
-                // Buttons vertically aligned
+                // Buttons to add an email and to create a conversation.
                 VStack(spacing: 15) {
+                    
+                    // Button to add a new email entry.
                     Button("Add Another Email") {
                         withAnimation {
                             emails.append(Email(value: ""))
@@ -62,6 +70,7 @@ struct NewConversationView: View {
                     .foregroundColor(.white)
                     .cornerRadius(8)
                     
+                    // Button to initiate the creation of a new conversation.
                     Button("Create Conversation") {
                         let lowercasedEmails = emails.map { $0.value.lowercased() }
                         viewModel.startNewConversation(with: lowercasedEmails, isGroup: true) { result in
@@ -83,12 +92,13 @@ struct NewConversationView: View {
                 .alert(isPresented: $showAlert) {
                     Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
                 }
-
+                
             }
             .padding()
             .navigationBarTitle("New Conversation", displayMode: .inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
+                    // Button to close the modal.
                     Button("Done") {
                         showModal = false
                     }
@@ -97,10 +107,12 @@ struct NewConversationView: View {
         }
     }
     
+    // Function to delete an email from the list.
     private func deleteEmail(email: Email) {
         emails.removeAll(where: { $0.id == email.id })
     }
 }
+
 
 
 

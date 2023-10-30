@@ -7,25 +7,44 @@
 
 import Foundation
 
+// Enum representing various authentication related alerts.
 enum AuthAlert: Identifiable {
-    case loginSuccess, registrationSuccess, emailOrPasswordError, passwordMismatch, emailFieldIssue, emailAlreadyExists, registrationError
+    
+    // Alert cases
+    case loginSuccess                // Login was successful
+    case registrationSuccess         // Registration was successful
+    case emailOrPasswordError        // There was an issue with either email or password
+    case passwordMismatch            // The passwords provided don't match
+    case emailFieldIssue             // There is an issue with the email field input
+    case emailAlreadyExists          // The email provided already exists
+    case registrationError           // General error during registration
+    case signoutError                //
 
-    var id: Int {
+    // Property to identify each alert uniquely.
+    var message: String {
         switch self {
         case .loginSuccess:
-            return 1
+            return "Login was successful!"
         case .registrationSuccess:
-            return 2
+            return "Registration was successful!"
         case .emailOrPasswordError:
-            return 3
+            return "There was an issue with either email or password."
         case .passwordMismatch:
-            return 4
+            return "The passwords provided don't match."
         case .emailFieldIssue:
-            return 5
+            return "There is an issue with the email field input."
         case .emailAlreadyExists:
-            return 6
+            return "The email provided already exists."
         case .registrationError:
-            return 7
+            return "There was a general error during registration."
+        case .signoutError:
+            return "An error occurred while signing out."
         }
     }
+    
+    // Using the message as the unique identifier
+    var id: String {
+        return message
+    }
 }
+

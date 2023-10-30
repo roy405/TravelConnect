@@ -7,6 +7,7 @@
 
 import Foundation
 
+// Represents a user within the system.
 struct User {
     let id: String
     let firstName: String
@@ -20,7 +21,7 @@ struct User {
     var interests: [String]?
     var aboutMe: String?
 
-    // Direct initializer
+    // Initializer for creating a user from given parameters.
     init(id: String, firstName: String, lastName: String, email: String, city: String, country: String, street: String, postcode: String, age: Int, interests: [String]? = nil, aboutMe: String? = nil) {
         self.id = id
         self.firstName = firstName
@@ -35,7 +36,7 @@ struct User {
         self.aboutMe = aboutMe
     }
 
-    // Convert Firestore Document to User
+    // Initializer for converting a Firestore document into a User object.
     init?(documentData: [String: Any]) {
         guard let id = documentData["id"] as? String,
               let firstName = documentData["firstName"] as? String,

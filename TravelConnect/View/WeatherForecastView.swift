@@ -26,7 +26,7 @@ struct WeatherForecastView: View {
                 }
             }
         }
-        // Comment out the following line to prevent fetching data
+        // Commented out the following line to prevent fetching data
         // .onAppear {
         //    viewModel.getWeatherForecastData(city: city)
         // }

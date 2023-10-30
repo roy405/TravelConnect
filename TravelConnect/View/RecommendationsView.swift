@@ -7,27 +7,29 @@
 
 import SwiftUI
 
+// A SwiftUI view that provides user recommendations.
 struct RecommendationsView: View {
-    @State private var recommendedUsers: [String] = []
-    @ObservedObject var viewModel: UserProfileViewModel
-
-
+    @State private var recommendedUsers: [String] = []    // An array to store recommended user emails.
+    @ObservedObject var viewModel: UserProfileViewModel   // ViewModel to handle user profile operations.
+    
     var body: some View {
         VStack {
+            // Title for recommendations section.
             Text("Recommendations")
                 .font(.largeTitle)
                 .padding(.top)
-
+            
             List {
+                // Section for recommended TripBuddies.
                 Section(header: Text("TripBuddies")) {
                     ForEach(recommendedUsers, id: \.self) { user in
                         Text(user)
                     }
                 }
-
+                
+                // Section for recommended places.
+                // Currently uses placeholder data.
                 Section(header: Text("Places")) {
-                    // Place dummy data here as placeholders.
-                    // Replace with actual data later.
                     ForEach(["Place 1", "Place 2", "Place 3"], id: \.self) { place in
                         Text(place)
                     }
@@ -35,34 +37,45 @@ struct RecommendationsView: View {
             }
             .listStyle(GroupedListStyle())
             .onAppear {
-                self.fetchRecommendations()
+                self.fetchRecommendations()  // Fetch recommendations when the view appears.
             }
         }
     }
-
+    
+    // Fetches recommendations based on interests.
     func fetchRecommendations() {
         let group = DispatchGroup()
-
+        
         var currentUserInterests: [String] = []
         var allUsersInterests: [String: [String]] = [:]
-
+        
         group.enter()
-        viewModel.fetchCurrentUserInterests { interests in
-            currentUserInterests = interests
+        viewModel.fetchCurrentUserInterests { result in
+            switch result {
+            case .success(let interests):
+                currentUserInterests = interests
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
             group.leave()
         }
-
+        
         group.enter()
-        viewModel.fetchOtherUsersInterests { interests in
-            allUsersInterests = interests
+        viewModel.fetchOtherUsersInterests { result in
+            switch result {
+            case .success(let interests):
+                allUsersInterests = interests
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
             group.leave()
         }
-
+        
         group.notify(queue: .main) {
-            // Clear previous recommendations
+            // Clear previous recommendations.
             recommendedUsers.removeAll()
-
-            // Once both fetches are done, process the recommendations
+            
+            // Process and filter the recommendations based on common interests.
             for (userEmail, interests) in allUsersInterests {
                 let commonInterests = Set(interests).intersection(currentUserInterests)
                 if commonInterests.count > 0 {
@@ -72,3 +85,4 @@ struct RecommendationsView: View {
         }
     }
 }
+

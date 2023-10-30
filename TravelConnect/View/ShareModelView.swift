@@ -12,6 +12,7 @@ import SDWebImageSwiftUI
 struct ShareModalView: View {
     @Binding var selectedImage: UIImage?
     @Binding var showImagePicker: Bool
+    @State private var error: ImagePickerError?
     var viewModel: ConversationsViewModel
     var conversation: Conversation
     
@@ -32,7 +33,13 @@ struct ShareModalView: View {
                             }
                         }
                         .sheet(isPresented: $showImagePicker) {
-                            ImagePicker(image: $selectedImage, isShown: $showImagePicker)
+                            ImagePicker(image: $selectedImage, isShown: $showImagePicker, error: $error)
+                                .alert(item: $error) { error in
+                                    switch error {
+                                    case .invalidImage:
+                                        return Alert(title: Text("Error"), message: Text("Expected a UIImage, but got something else."), dismissButton: .default(Text("OK")))
+                                    }
+                                }
                         }
                         
                         Button(action: {

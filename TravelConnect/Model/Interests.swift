@@ -7,6 +7,7 @@
 
 import Foundation
 
+// Represents a categorized list of interests.
 struct Interests: Decodable {
     let natureAndOutdoors: [String]
     let culturalAndHistorical: [String]
@@ -19,7 +20,8 @@ struct Interests: Decodable {
     let luxuryAndExclusive: [String]
     let nicheAndSpecific: [String]
     let familyAndGroup: [String]
-
+    
+    // Coding keys for decoding the JSON keys into Swift variable names.
     enum CodingKeys: String, CodingKey {
         case natureAndOutdoors = "Nature & Outdoors"
         case culturalAndHistorical = "Cultural & Historical"
