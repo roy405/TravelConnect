@@ -30,7 +30,7 @@ struct ChatDetailView: View {
     // The main body of the ChatDetailView
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: 5) {
                 // Conversation Icon and Name
                 HStack {
                     Image(systemName: "person.crop.circle")
@@ -42,6 +42,7 @@ struct ChatDetailView: View {
                         .padding(.leading)
                 }
                 .padding(.vertical)
+                .padding(.leading,10)
                 if mutableConversation.isGroup {
                     // Allow editing the chat name
                     SectionView(title: "Chat Name") {
@@ -63,8 +64,9 @@ struct ChatDetailView: View {
                             }
                         }
                     }
+                    .frame(width:UIScreen.main.bounds.width - 20)
+                    .padding(.horizontal,10)
                 }
-                
                 // Display photos related to the chat/trip
                 SectionView(title: "Photos") {
                     ScrollView(.horizontal, showsIndicators: false) {
@@ -82,43 +84,56 @@ struct ChatDetailView: View {
                         }
                     }
                 }
-                
+                .frame(width:UIScreen.main.bounds.width - 20)
+                .padding(.horizontal,10)
                 // Display Collaborations related to chat/trip
                 SectionView(title: "Collaboration") {
-                    HStack(spacing: 10) {
-                        Image(systemName: "person.2")
-                            .frame(width: 25, height: 25)
-                        Text("Collaboration details here")
+                    ScrollView(.horizontal, showsIndicators: false){
+                        HStack(spacing: 10) {
+                            Image(systemName: "person.2")
+                                .imageScale(.large)
+                            Text("Collaboration details here")
+                        }
                     }
                 }
-                
+                .frame(width:UIScreen.main.bounds.width - 20)
+                .padding(.horizontal,10)
                 // Published Routes related to chat/trip
                 SectionView(title: "Routes") {
-                    HStack(spacing: 10) {
-                        Image(systemName: "map")
-                            .frame(width: 25, height: 25)
-                        Text("Route details here")
+                    ScrollView(.horizontal, showsIndicators: false){
+                        HStack(spacing: 10) {
+                            Image(systemName: "map")
+                                .imageScale(.large)
+                            Text("Route details here")
+                        }
                     }
                 }
-                
+                .frame(width:UIScreen.main.bounds.width - 20)
+                .padding(.horizontal,10)
                 // Notes Related to chat/trip
                 SectionView(title: "Notes") {
-                    HStack(spacing: 10) {
-                        Image(systemName: "note.text")
-                            .frame(width: 25, height: 25)
-                        Text("Notes details here")
+                    ScrollView(.horizontal, showsIndicators: false){
+                        HStack(spacing: 10) {
+                            Image(systemName: "note.text")
+                                .imageScale(.large)
+                            Text("Notes details here")
+                        }
                     }
                 }
-                
+                .frame(width:UIScreen.main.bounds.width - 20)
+                .padding(.horizontal,10)
                 // Shared Files Related to chat/trip
                 SectionView(title: "Shared Files") {
-                    HStack(spacing: 10) {
-                        Image(systemName: "doc")
-                            .frame(width: 25, height: 25)
-                        Text("Shared file details here")
+                    ScrollView(.horizontal, showsIndicators: false){
+                        HStack(spacing: 10) {
+                            Image(systemName: "doc")
+                                .imageScale(.large)
+                            Text("Shared file details here")
+                        }
                     }
                 }
-                
+                .frame(width:UIScreen.main.bounds.width - 20)
+                .padding(.horizontal,10)
                 Spacer()
             }
             .padding()

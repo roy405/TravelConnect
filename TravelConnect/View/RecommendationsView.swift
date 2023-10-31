@@ -14,10 +14,10 @@ struct RecommendationsView: View {
     
     var body: some View {
         VStack {
-            // Title for recommendations section.
-            Text("Recommendations")
-                .font(.largeTitle)
-                .padding(.top)
+//            // Title for recommendations section.
+//            Text("Recommendations")
+//                .font(.largeTitle)
+//                .padding(.top)
             
             List {
                 // Section for recommended TripBuddies.
@@ -35,6 +35,8 @@ struct RecommendationsView: View {
                     }
                 }
             }
+            .navigationTitle("Recommendations")
+            .navigationBarTitleDisplayMode(.inline)
             .listStyle(GroupedListStyle())
             .onAppear {
                 self.fetchRecommendations()  // Fetch recommendations when the view appears.

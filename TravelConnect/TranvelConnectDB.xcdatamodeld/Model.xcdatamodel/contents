@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22222" systemVersion="22G120" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="CoordinateRecord" representedClassName="CoordinateRecord" syncable="YES" codeGenerationType="class">
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="coordinateChild" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MapItemRecord" inverseName="coordinate" inverseEntity="MapItemRecord"/>
+    </entity>
+    <entity name="MapItemRecord" representedClassName="MapItemRecord" syncable="YES" codeGenerationType="class">
+        <relationship name="coordinate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoordinateRecord" inverseName="coordinateChild" inverseEntity="CoordinateRecord"/>
+        <relationship name="mapItemChild" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PlaceOfInterestRecord" inverseName="mapItem" inverseEntity="PlaceOfInterestRecord"/>
+    </entity>
+    <entity name="PlaceOfInterestRecord" representedClassName="PlaceOfInterestRecord" syncable="YES" codeGenerationType="class">
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="placeDescription" optional="YES" attributeType="String"/>
+        <attribute name="time" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="type" optional="YES" attributeType="String"/>
+        <relationship name="mapItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MapItemRecord" inverseName="mapItemChild" inverseEntity="MapItemRecord"/>
+        <relationship name="placeOfInterestChild" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TripRecord" inverseName="placeOfInterest" inverseEntity="TripRecord"/>
+    </entity>
+    <entity name="TripRecord" representedClassName="TripRecord" syncable="YES" codeGenerationType="class">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="topImage" optional="YES" attributeType="Binary"/>
+        <attribute name="tripInfo" optional="YES" attributeType="String"/>
+        <attribute name="type" optional="YES" attributeType="String"/>
+        <relationship name="placeOfInterest" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PlaceOfInterestRecord" inverseName="placeOfInterestChild" inverseEntity="PlaceOfInterestRecord"/>
+    </entity>
+</model>

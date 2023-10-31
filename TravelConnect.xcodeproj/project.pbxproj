@@ -17,7 +17,6 @@
 		1CB78F572AE4284A0052882A /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB78F562AE4284A0052882A /* FirebaseAnalyticsSwift */; };
 		1CB78F592AE4284A0052882A /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB78F582AE4284A0052882A /* FirebaseAnalyticsWithoutAdIdSupport */; };
 		1CB78F5B2AE4284A0052882A /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB78F5A2AE4284A0052882A /* FirebaseAppCheck */; };
-		1CB78F5D2AE429B10052882A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CB78F5C2AE429B10052882A /* GoogleService-Info.plist */; };
 		1CB78F602AE42A150052882A /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB78F5F2AE42A150052882A /* LoginView.swift */; };
 		1CB78F622AE42A280052882A /* RegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB78F612AE42A280052882A /* RegistrationView.swift */; };
 		1CB78F642AE42AA00052882A /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB78F632AE42AA00052882A /* AuthViewModel.swift */; };
@@ -64,7 +63,6 @@
 		1CBEB28C2AEEAA20005669EC /* ShareModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBEB28B2AEEAA20005669EC /* ShareModelView.swift */; };
 		1CBEB28F2AEF5DEA005669EC /* AnimationPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBEB28E2AEF5DEA005669EC /* AnimationPlayerView.swift */; };
 		1CBEB2912AEF5E53005669EC /* LoadingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBEB2902AEF5E53005669EC /* LoadingScreen.swift */; };
-		1CBEB2952AEF6B05005669EC /* loadVid.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 1CBEB2942AEF6B05005669EC /* loadVid.mp4 */; };
 		1CBEB2972AEFEB94005669EC /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBEB2962AEFEB94005669EC /* AppError.swift */; };
 		1CBEB2992AEFFCF0005669EC /* ChatDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBEB2982AEFFCF0005669EC /* ChatDetailView.swift */; };
 		1CDB07DE2AEA974A002A5EEA /* Conversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDB07DD2AEA974A002A5EEA /* Conversation.swift */; };
@@ -73,6 +71,20 @@
 		1CDB07E42AEA98BA002A5EEA /* ConversationListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDB07E32AEA98BA002A5EEA /* ConversationListView.swift */; };
 		1CDB07E62AEA990F002A5EEA /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDB07E52AEA990F002A5EEA /* ChatView.swift */; };
 		1CDB07E82AEB21BD002A5EEA /* NewConversationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDB07E72AEB21BD002A5EEA /* NewConversationView.swift */; };
+		EEDD892E2AF038A30051A6B9 /* loadVid.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = EEDD892D2AF038A30051A6B9 /* loadVid.mp4 */; };
+		EEDD89322AF039140051A6B9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EEDD89312AF039140051A6B9 /* GoogleService-Info.plist */; };
+		EEDD89342AF03AB10051A6B9 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDD89332AF03AB10051A6B9 /* Persistence.swift */; };
+		EEDD89372AF03B230051A6B9 /* TranvelConnectDB.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = EEDD89352AF03B230051A6B9 /* TranvelConnectDB.xcdatamodeld */; };
+		EEDD89392AF03BA40051A6B9 /* Trip.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDD89382AF03BA40051A6B9 /* Trip.swift */; };
+		EEDD893B2AF03BDC0051A6B9 /* TripDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDD893A2AF03BDC0051A6B9 /* TripDetailViewModel.swift */; };
+		EEDD893D2AF03BF30051A6B9 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDD893C2AF03BF30051A6B9 /* MapViewModel.swift */; };
+		EEDD89432AF03C180051A6B9 /* PlaceOfInterestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDD893E2AF03C180051A6B9 /* PlaceOfInterestView.swift */; };
+		EEDD89442AF03C180051A6B9 /* TripListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDD893F2AF03C180051A6B9 /* TripListItemView.swift */; };
+		EEDD89452AF03C180051A6B9 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDD89402AF03C180051A6B9 /* MapView.swift */; };
+		EEDD89462AF03C180051A6B9 /* TripListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDD89412AF03C180051A6B9 /* TripListView.swift */; };
+		EEDD89472AF03C180051A6B9 /* TripDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDD89422AF03C180051A6B9 /* TripDetailView.swift */; };
+		EEDD894A2AF03C290051A6B9 /* ImageGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDD89482AF03C290051A6B9 /* ImageGalleryView.swift */; };
+		EEDD894B2AF03C290051A6B9 /* ItemLookAroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDD89492AF03C290051A6B9 /* ItemLookAroundView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -83,8 +95,6 @@
 		1CB3BFEC2ADF9BEA006A6294 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		1CB3C0032ADF9EEC006A6294 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		1CB3C0052ADFA72C006A6294 /* .gitignore.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = .gitignore.md; sourceTree = "<group>"; };
-		1CB78F5C2AE429B10052882A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
-		1CB78F5E2AE429B60052882A /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1CB78F5F2AE42A150052882A /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		1CB78F612AE42A280052882A /* RegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationView.swift; sourceTree = "<group>"; };
 		1CB78F632AE42AA00052882A /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
@@ -103,7 +113,6 @@
 		1CBEB28B2AEEAA20005669EC /* ShareModelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareModelView.swift; sourceTree = "<group>"; };
 		1CBEB28E2AEF5DEA005669EC /* AnimationPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationPlayerView.swift; sourceTree = "<group>"; };
 		1CBEB2902AEF5E53005669EC /* LoadingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingScreen.swift; sourceTree = "<group>"; };
-		1CBEB2942AEF6B05005669EC /* loadVid.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = loadVid.mp4; path = ../../Downloads/loadVid.mp4; sourceTree = "<group>"; };
 		1CBEB2962AEFEB94005669EC /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 		1CBEB2982AEFFCF0005669EC /* ChatDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatDetailView.swift; sourceTree = "<group>"; };
 		1CDB07DD2AEA974A002A5EEA /* Conversation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conversation.swift; sourceTree = "<group>"; };
@@ -112,6 +121,22 @@
 		1CDB07E32AEA98BA002A5EEA /* ConversationListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationListView.swift; sourceTree = "<group>"; };
 		1CDB07E52AEA990F002A5EEA /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		1CDB07E72AEB21BD002A5EEA /* NewConversationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewConversationView.swift; sourceTree = "<group>"; };
+		EEDD892D2AF038A30051A6B9 /* loadVid.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = loadVid.mp4; path = TravelConnect/loadVid.mp4; sourceTree = "<group>"; };
+		EEDD89312AF039140051A6B9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		EEDD89332AF03AB10051A6B9 /* Persistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
+		EEDD89362AF03B230051A6B9 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		EEDD89382AF03BA40051A6B9 /* Trip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Trip.swift; sourceTree = "<group>"; };
+		EEDD893A2AF03BDC0051A6B9 /* TripDetailViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TripDetailViewModel.swift; sourceTree = "<group>"; };
+		EEDD893C2AF03BF30051A6B9 /* MapViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
+		EEDD893E2AF03C180051A6B9 /* PlaceOfInterestView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaceOfInterestView.swift; sourceTree = "<group>"; };
+		EEDD893F2AF03C180051A6B9 /* TripListItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TripListItemView.swift; sourceTree = "<group>"; };
+		EEDD89402AF03C180051A6B9 /* MapView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
+		EEDD89412AF03C180051A6B9 /* TripListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TripListView.swift; sourceTree = "<group>"; };
+		EEDD89422AF03C180051A6B9 /* TripDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TripDetailView.swift; sourceTree = "<group>"; };
+		EEDD89482AF03C290051A6B9 /* ImageGalleryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageGalleryView.swift; sourceTree = "<group>"; };
+		EEDD89492AF03C290051A6B9 /* ItemLookAroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemLookAroundView.swift; sourceTree = "<group>"; };
+		EEDD894C2AF03E780051A6B9 /* TravelConnect.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TravelConnect.entitlements; sourceTree = "<group>"; };
+		EEDD894D2AF03EA40051A6B9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,10 +186,11 @@
 		1CB3BFD92ADF9BE9006A6294 = {
 			isa = PBXGroup;
 			children = (
-				1CBEB2942AEF6B05005669EC /* loadVid.mp4 */,
+				EEDD892D2AF038A30051A6B9 /* loadVid.mp4 */,
 				1CB3C0052ADFA72C006A6294 /* .gitignore.md */,
 				1CB3BFE42ADF9BE9006A6294 /* TravelConnect */,
 				1CB3BFE32ADF9BE9006A6294 /* Products */,
+				EEDD892C2AF037CC0051A6B9 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -179,6 +205,8 @@
 		1CB3BFE42ADF9BE9006A6294 /* TravelConnect */ = {
 			isa = PBXGroup;
 			children = (
+				EEDD894D2AF03EA40051A6B9 /* Info.plist */,
+				EEDD894C2AF03E780051A6B9 /* TravelConnect.entitlements */,
 				1CB3BFFC2ADF9C1B006A6294 /* ML */,
 				1CB3BFFB2ADF9C14006A6294 /* Utilities */,
 				1CB3BFFA2ADF9C0D006A6294 /* ViewModel */,
@@ -186,9 +214,10 @@
 				1CB3BFF82ADF9BF5006A6294 /* Model */,
 				1CB3BFE72ADF9BE9006A6294 /* ContentView.swift */,
 				1CB3BFE52ADF9BE9006A6294 /* TravelConnectApp.swift */,
+				EEDD89332AF03AB10051A6B9 /* Persistence.swift */,
+				EEDD89352AF03B230051A6B9 /* TranvelConnectDB.xcdatamodeld */,
 				1CBEB27D2AEE4AEC005669EC /* interestsJSON.json */,
 				1CB3BFE92ADF9BEA006A6294 /* Assets.xcassets */,
-				1CB78F5E2AE429B60052882A /* GoogleService-Info.plist */,
 				1CB3BFEB2ADF9BEA006A6294 /* Preview Content */,
 			);
 			path = TravelConnect;
@@ -197,7 +226,6 @@
 		1CB3BFEB2ADF9BEA006A6294 /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
-				1CB78F5C2AE429B10052882A /* GoogleService-Info.plist */,
 				1CB3BFEC2ADF9BEA006A6294 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
@@ -206,6 +234,7 @@
 		1CB3BFF82ADF9BF5006A6294 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				EEDD89382AF03BA40051A6B9 /* Trip.swift */,
 				1CB3C0032ADF9EEC006A6294 /* User.swift */,
 				1CDB07DD2AEA974A002A5EEA /* Conversation.swift */,
 				1CDB07E12AEA9832002A5EEA /* Message.swift */,
@@ -231,6 +260,13 @@
 				1CBEB28B2AEEAA20005669EC /* ShareModelView.swift */,
 				1CBEB2742AECE1CB005669EC /* UserProfileView.swift */,
 				1CBEB2832AEE8B02005669EC /* WeatherForecastView.swift */,
+				EEDD89402AF03C180051A6B9 /* MapView.swift */,
+				EEDD893E2AF03C180051A6B9 /* PlaceOfInterestView.swift */,
+				EEDD89422AF03C180051A6B9 /* TripDetailView.swift */,
+				EEDD893F2AF03C180051A6B9 /* TripListItemView.swift */,
+				EEDD89412AF03C180051A6B9 /* TripListView.swift */,
+				EEDD89482AF03C290051A6B9 /* ImageGalleryView.swift */,
+				EEDD89492AF03C290051A6B9 /* ItemLookAroundView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -242,6 +278,8 @@
 				1CDB07DF2AEA979D002A5EEA /* ConversationsViewModel.swift */,
 				1CBEB2722AECE1A9005669EC /* UserProfileViewModel.swift */,
 				1CBEB2852AEE8C40005669EC /* WeatherForecastViewModel.swift */,
+				EEDD893C2AF03BF30051A6B9 /* MapViewModel.swift */,
+				EEDD893A2AF03BDC0051A6B9 /* TripDetailViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -270,6 +308,14 @@
 				1CBEB2902AEF5E53005669EC /* LoadingScreen.swift */,
 			);
 			path = StartupScreen;
+			sourceTree = "<group>";
+		};
+		EEDD892C2AF037CC0051A6B9 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				EEDD89312AF039140051A6B9 /* GoogleService-Info.plist */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -371,9 +417,9 @@
 			files = (
 				1CB3BFED2ADF9BEA006A6294 /* Preview Assets.xcassets in Resources */,
 				1CBEB27E2AEE4AEC005669EC /* interestsJSON.json in Resources */,
+				EEDD89322AF039140051A6B9 /* GoogleService-Info.plist in Resources */,
+				EEDD892E2AF038A30051A6B9 /* loadVid.mp4 in Resources */,
 				1CB3BFEA2ADF9BEA006A6294 /* Assets.xcassets in Resources */,
-				1CBEB2952AEF6B05005669EC /* loadVid.mp4 in Resources */,
-				1CB78F5D2AE429B10052882A /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -386,23 +432,33 @@
 			files = (
 				1CB78F9C2AE43A180052882A /* AuthAlert.swift in Sources */,
 				1CDB07E02AEA979D002A5EEA /* ConversationsViewModel.swift in Sources */,
+				EEDD89472AF03C180051A6B9 /* TripDetailView.swift in Sources */,
 				1CBEB2732AECE1A9005669EC /* UserProfileViewModel.swift in Sources */,
 				1CDB07E82AEB21BD002A5EEA /* NewConversationView.swift in Sources */,
 				1CB3BFE82ADF9BE9006A6294 /* ContentView.swift in Sources */,
 				1CB78F602AE42A150052882A /* LoginView.swift in Sources */,
 				1CBEB2912AEF5E53005669EC /* LoadingScreen.swift in Sources */,
+				EEDD89372AF03B230051A6B9 /* TranvelConnectDB.xcdatamodeld in Sources */,
 				1CDB07DE2AEA974A002A5EEA /* Conversation.swift in Sources */,
+				EEDD89462AF03C180051A6B9 /* TripListView.swift in Sources */,
 				1CB3C0042ADF9EEC006A6294 /* User.swift in Sources */,
 				1CBEB2992AEFFCF0005669EC /* ChatDetailView.swift in Sources */,
+				EEDD89432AF03C180051A6B9 /* PlaceOfInterestView.swift in Sources */,
 				1CBEB2822AEE731C005669EC /* RecommendationsView.swift in Sources */,
 				1CDB07E62AEA990F002A5EEA /* ChatView.swift in Sources */,
 				1CDB07E22AEA9832002A5EEA /* Message.swift in Sources */,
 				1CB78F642AE42AA00052882A /* AuthViewModel.swift in Sources */,
 				1CBEB2842AEE8B02005669EC /* WeatherForecastView.swift in Sources */,
 				1CBEB2772AEE3634005669EC /* ImagePicker.swift in Sources */,
+				EEDD893D2AF03BF30051A6B9 /* MapViewModel.swift in Sources */,
 				1CBEB28C2AEEAA20005669EC /* ShareModelView.swift in Sources */,
+				EEDD893B2AF03BDC0051A6B9 /* TripDetailViewModel.swift in Sources */,
+				EEDD89442AF03C180051A6B9 /* TripListItemView.swift in Sources */,
 				1CBEB2882AEE8DBA005669EC /* ForecastModel.swift in Sources */,
+				EEDD89392AF03BA40051A6B9 /* Trip.swift in Sources */,
 				1CBEB2752AECE1CB005669EC /* UserProfileView.swift in Sources */,
+				EEDD894B2AF03C290051A6B9 /* ItemLookAroundView.swift in Sources */,
+				EEDD89452AF03C180051A6B9 /* MapView.swift in Sources */,
 				1CBEB2862AEE8C40005669EC /* WeatherForecastViewModel.swift in Sources */,
 				1CBEB2802AEE4BD1005669EC /* Interests.swift in Sources */,
 				1CBEB2972AEFEB94005669EC /* AppError.swift in Sources */,
@@ -411,7 +467,9 @@
 				1CB78F622AE42A280052882A /* RegistrationView.swift in Sources */,
 				1CB78F9E2AE43CA40052882A /* SettingsView.swift in Sources */,
 				1CDB07E42AEA98BA002A5EEA /* ConversationListView.swift in Sources */,
+				EEDD894A2AF03C290051A6B9 /* ImageGalleryView.swift in Sources */,
 				1CBEB28F2AEF5DEA005669EC /* AnimationPlayerView.swift in Sources */,
+				EEDD89342AF03AB10051A6B9 /* Persistence.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -542,12 +600,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = TravelConnect/TravelConnect.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"TravelConnect/Preview Content\"";
-				DEVELOPMENT_TEAM = 5GZC5WLRP3;
+				DEVELOPMENT_TEAM = 37NUP3CV36;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TravelConnect/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "To take photos within the app";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "To select photos for uploading.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -573,12 +633,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = TravelConnect/TravelConnect.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"TravelConnect/Preview Content\"";
-				DEVELOPMENT_TEAM = 5GZC5WLRP3;
+				DEVELOPMENT_TEAM = 37NUP3CV36;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TravelConnect/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "To take photos within the app";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "To select photos for uploading.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -808,6 +870,19 @@
 			productName = SDWebImageSwiftUI;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		EEDD89352AF03B230051A6B9 /* TranvelConnectDB.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				EEDD89362AF03B230051A6B9 /* Model.xcdatamodel */,
+			);
+			currentVersion = EEDD89362AF03B230051A6B9 /* Model.xcdatamodel */;
+			path = TranvelConnectDB.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 1CB3BFDA2ADF9BE9006A6294 /* Project object */;
 }

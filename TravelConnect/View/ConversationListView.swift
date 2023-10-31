@@ -55,8 +55,9 @@ struct ConversationsListView: View {
                     }
                 )
             }
-            Divider() // Separate each conversation with a divider.
+//            Divider() // Separate each conversation with a divider.
         }
+        .listStyle(.plain)
         .onAppear { // Fetch conversations when the view appears.
             if let user = viewModel.authViewModel.currentUserEmail {
                 print(user)
@@ -91,6 +92,7 @@ struct ConversationsListView: View {
         }
         // Define the navigation bar appearance and items.
         .navigationBarTitle("Conversations")
+        .navigationBarTitleDisplayMode(.inline)
         .navigationBarItems(trailing:
             Button(action: {
                 self.showCreateConversationModal = true

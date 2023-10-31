@@ -41,6 +41,7 @@ struct SettingsView: View {
         }
         .listStyle(GroupedListStyle())  // Styles the list in a grouped manner.
         .navigationTitle("Settings")    // Sets the title for the navigation bar.
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear {                     // Action to perform when the view appears.
             if let email = viewModel.currentUserEmail {
                 userProfileViewModel.fetchUserProfile(email: email)

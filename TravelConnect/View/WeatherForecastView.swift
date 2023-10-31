@@ -38,16 +38,20 @@ struct DayWeatherView: View {
     var forecast: Forecast
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(dateString(from: forecast.date)).foregroundColor(.white)
-            Text("\(forecast.maxtemp_c, specifier: "%.1f")°C / \(forecast.mintemp_c, specifier: "%.1f")°C").foregroundColor(.white)
-            Text(forecast.conditionText).foregroundColor(.white)
+        VStack(alignment: .center, spacing: 10) {
+            Text(dateString(from: forecast.date))
+                .font(.title)
+            Text("\(forecast.maxtemp_c, specifier: "%.1f")°C / \(forecast.mintemp_c, specifier: "%.1f")°C")
+                .font(.title3)
+            Text(forecast.conditionText)
+                .font(.title2)
         }
-        .padding()
-        .frame(width: 200)
+        .foregroundColor(.white)
+        .frame(width: 200,height: 200)
         .background(Color.blue)
         .cornerRadius(10)
         .shadow(color: .gray.opacity(0.3), radius: 5, x: 0, y: 2)
+        .padding()
     }
 
     func dateString(from date: Date) -> String {

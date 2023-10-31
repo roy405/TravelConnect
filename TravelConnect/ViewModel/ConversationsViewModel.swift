@@ -125,6 +125,10 @@ class ConversationsViewModel: ObservableObject {
             completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Current user email not found"])))
             return
         }
+        guard emails.count > 0 else {
+            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Please add emails"])))
+            return
+        }
         let allMemberEmails = emails + [currentUserEmail]
         
         // Check if the email exists in the Firestore users collection

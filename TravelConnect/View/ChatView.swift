@@ -23,70 +23,94 @@ struct ChatView: View {
     @State private var navigationTrigger: Int? = nil
     @State private var showImagePickerFromModal: Bool = false
     
+    @State private var showChatDetailView:Bool = false
+    
     // Property to get current user's ID.
     var currentUserID: String {
         viewModel.currentUserID
     }
     
+    
     var body: some View {
-        VStack(spacing: 1) {
-            // Navigation link to detailed chat view.
-            NavigationLink(destination: ChatDetailView(conversation: conversation, viewModel: viewModel)) {
-                Text(conversation.displayName)
-                    .font(.title2)
-                    .padding(.vertical, 8)
-            }
-            .background(Color.gray.opacity(0.1))
-            .cornerRadius(10)
-            // Display all the messages in the chat.
-            List(viewModel.messages, id: \.id) { message in
-                MessageView(message: message, currentUserID: currentUserID)
-            }
-            .padding(.bottom, 10)
-            
-            HStack(spacing: 10) {
-                // Button to display a modal to share content.
-                Button(action: {
-                    showShareModal.toggle()
-                }) {
-                    Image(systemName: "plus")
-                        .frame(width: 36, height: 36)
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(18)
+        NavigationView{
+            VStack(spacing: 1) {
+//                // Navigation link to detailed chat view.
+//                NavigationLink(destination: ChatDetailView(conversation: conversation, viewModel: viewModel)) {
+//                    Text(conversation.displayName)
+//                        .font(.title2)
+//                        .padding(.vertical, 8)
+//                }
+//                .background(Color.gray.opacity(0.1))
+//                .cornerRadius(10)
+                // Display all the messages in the chat.
+                List(viewModel.messages, id: \.id) { message in
+                    MessageView(message: message, currentUserID: currentUserID)
                 }
-                .sheet(isPresented: $showShareModal) {
-                    ShareModalView(
-                        selectedImage: $selectedImage,
-                        showImagePicker: $showImagePickerFromModal,
-                        viewModel: viewModel,
-                        conversation: conversation
-                    )
-                }
+                .padding(.bottom, 10)
                 
-                .onTapGesture {
-                    navigateToShareModal.toggle()
-                }
-                // Text field to input a new message.
-                TextField("Enter message", text: $messageText)
-                    .padding(10)
-                    .background(Color.gray.opacity(0.1))
+                HStack(spacing: 10) {
+                    // Button to display a modal to share content.
+                    Button(action: {
+                        showShareModal.toggle()
+                    }) {
+                        Image(systemName: "plus")
+                            .frame(width: 36, height: 36)
+                            .background(Color.gray.opacity(0.2))
+                            .cornerRadius(18)
+                    }
+                    .sheet(isPresented: $showShareModal) {
+                        ShareModalView(
+                            selectedImage: $selectedImage,
+                            showImagePicker: $showImagePickerFromModal,
+                            viewModel: viewModel,
+                            conversation: conversation
+                        )
+                    }
+                    
+                    .onTapGesture {
+                        navigateToShareModal.toggle()
+                    }
+                    // Text field to input a new message.
+                    TextField("Enter message", text: $messageText)
+                        .padding(10)
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(15)
+                        .layoutPriority(1)
+                    
+                    Button("Send") {
+                        viewModel.sendMessage(conversation: conversation, text: messageText, senderID: Auth.auth().currentUser?.uid ?? "")
+                        messageText = ""
+                    }
+                    .frame(minWidth: 50)
+                    .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
+                    .background(Color.blue)
+                    .foregroundColor(.white)
                     .cornerRadius(15)
-                    .layoutPriority(1)
-                
-                Button("Send") {
-                    viewModel.sendMessage(conversation: conversation, text: messageText, senderID: Auth.auth().currentUser?.uid ?? "")
-                    messageText = ""
                 }
-                .frame(minWidth: 50)
-                .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .cornerRadius(15)
+                .padding(.horizontal)
             }
-            .padding(.horizontal)
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar{
+            ToolbarItem(placement: .navigationBarTrailing ) {
+                Button(action: {
+                    showChatDetailView = true
+                }) {
+                    HStack{
+                        Text(conversation.displayName)
+                            .bold()
+                        Image(systemName: "person.3")
+                    }
+                    .padding(.trailing)
+                }
+                .sheet(isPresented: $showChatDetailView) {
+                    ChatDetailView(conversation: conversation, viewModel: viewModel)
+                }
+            }
         }
         .onAppear {
             viewModel.fetchMessages(conversationCustomID: conversation.id)
+            print(1,viewModel.messages)
         }
     }
 }

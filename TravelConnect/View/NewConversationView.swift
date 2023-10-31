@@ -31,7 +31,7 @@ struct NewConversationView: View {
                     ForEach(emails) { email in
                         HStack {
                             // Editable text field for email.
-                            TextField("Enter email", text: Binding(
+                            TextField(" Enter email", text: Binding(
                                 get: { email.value },
                                 set: { newValue in
                                     // Update the value of the email.
@@ -40,7 +40,8 @@ struct NewConversationView: View {
                                     }
                                 }
                             ))
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .frame(height:50)
+                            .background(RoundedRectangle(cornerRadius: 15).strokeBorder(Color(.systemGray6), lineWidth: 1))
                             
                             // Button to delete the email entry.
                             Button(action: {
@@ -50,26 +51,29 @@ struct NewConversationView: View {
                             }) {
                                 Image(systemName: "trash")
                                     .foregroundColor(.red)
+                                    .imageScale(.large)
                             }
                         }
+                        .padding(.vertical,5)
                     }
                 }
                 
                 // Buttons to add an email and to create a conversation.
-                VStack(spacing: 15) {
-                    
+                HStack{
+                    Spacer()
                     // Button to add a new email entry.
-                    Button("Add Another Email") {
+                    Button("Add Email") {
                         withAnimation {
                             emails.append(Email(value: ""))
                         }
                     }
                     .buttonStyle(PlainButtonStyle())
-                    .padding()
+                    .frame(width:UIScreen.main.bounds.width * 0.45,height:50)
                     .background(Color.blue)
                     .foregroundColor(.white)
                     .cornerRadius(8)
                     
+                    Spacer()
                     // Button to initiate the creation of a new conversation.
                     Button("Create Conversation") {
                         let lowercasedEmails = emails.map { $0.value.lowercased() }
@@ -84,17 +88,18 @@ struct NewConversationView: View {
                         }
                     }
                     .buttonStyle(PlainButtonStyle())
-                    .padding()
+                    .frame(width:UIScreen.main.bounds.width * 0.45,height:50)
                     .background(Color.green)
                     .foregroundColor(.white)
                     .cornerRadius(8)
+                    Spacer()
                 }
                 .alert(isPresented: $showAlert) {
                     Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
                 }
                 
             }
-            .padding()
+            .padding(.all,20)
             .navigationBarTitle("New Conversation", displayMode: .inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {

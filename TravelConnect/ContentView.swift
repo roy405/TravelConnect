@@ -12,6 +12,11 @@ struct ContentView: View {
     @ObservedObject var viewModel: AuthViewModel
     // ViewModel to manage user profile-related actions and states, initialized with an AuthViewModel instance.
     @StateObject var userProfileViewModel = UserProfileViewModel(authViewModel: AuthViewModel())
+    //MARK: - CoreData Singlton
+    @ObservedObject var tripDetailViewModel:TripDetailViewModel = TripDetailViewModel()
+    @ObservedObject var mapViewModel:MapViewModel = MapViewModel()
+    let persistenceController = PersistenceController.shared
+    
 
     var body: some View {
         // Tab view for the core navigation of the appplication
@@ -26,10 +31,13 @@ struct ContentView: View {
 
             // Tab 2 -
             NavigationView {
-                WeatherForecastView(city: "Sydney")
+                TripListView()
+                    .environmentObject(tripDetailViewModel)
+                    .environmentObject(mapViewModel)
+                    .environment(\.managedObjectContext, persistenceController.container.viewContext)
             }
             .tabItem {
-                Label("Forecast", systemImage: "sun")
+                Label("Trip", systemImage: "list.bullet.rectangle.portrait")
             }
             // Tab 3 - Recommendations
             NavigationView {
@@ -47,5 +55,9 @@ struct ContentView: View {
             }
         }
     }
+}
+
+#Preview {
+    ContentView(viewModel: AuthViewModel())
 }
 
