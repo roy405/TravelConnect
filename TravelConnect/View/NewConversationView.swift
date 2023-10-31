@@ -22,6 +22,11 @@ struct NewConversationView: View {
     @State private var showAlert = false    // State to control the visibility of an alert.
     @State private var alertMessage = ""    // Message to be displayed in the alert.
     
+    // Computed property to check if all email fields have valid values.
+    var allEmailsValid: Bool {
+        !emails.contains { $0.value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+    }
+    
     var body: some View {
         NavigationView {
             VStack(spacing: 15) {
@@ -76,23 +81,28 @@ struct NewConversationView: View {
                     Spacer()
                     // Button to initiate the creation of a new conversation.
                     Button("Create Conversation") {
-                        let lowercasedEmails = emails.map { $0.value.lowercased() }
-                        viewModel.startNewConversation(with: lowercasedEmails, isGroup: true) { result in
-                            switch result {
-                            case .success:
-                                showModal = false
-                            case .failure(let error):
-                                alertMessage = error.localizedDescription
-                                showAlert = true
+                        if allEmailsValid {
+                            let lowercasedEmails = emails.map { $0.value.lowercased() }
+                            viewModel.startNewConversation(with: lowercasedEmails, isGroup: true) { result in
+                                switch result {
+                                case .success:
+                                    showModal = false
+                                case .failure(let error):
+                                    alertMessage = error.localizedDescription
+                                    showAlert = true
+                                }
                             }
+                        } else {
+                            alertMessage = "Please ensure all email fields are filled out."
+                            showAlert = true
                         }
                     }
+                    .disabled(!allEmailsValid)
                     .buttonStyle(PlainButtonStyle())
-                    .frame(width:UIScreen.main.bounds.width * 0.45,height:50)
-                    .background(Color.green)
+                    .padding()
+                    .background(allEmailsValid ? Color.green : Color.gray)
                     .foregroundColor(.white)
                     .cornerRadius(8)
-                    Spacer()
                 }
                 .alert(isPresented: $showAlert) {
                     Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))

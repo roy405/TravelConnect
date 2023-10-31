@@ -21,15 +21,14 @@ struct WeatherForecastView: View {
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 20) {
-                ForEach(dummyForecasts, id: \.date) { forecast in
+                ForEach(viewModel.forecasts, id: \.date) { forecast in  // Using viewModel's forecasts array
                     DayWeatherView(forecast: forecast)
                 }
             }
         }
-        // Commented out the following line to prevent fetching data
-        // .onAppear {
-        //    viewModel.getWeatherForecastData(city: city)
-        // }
+        .onAppear {
+            viewModel.getWeatherForecastData(city: city)
+        }
     }
 }
 

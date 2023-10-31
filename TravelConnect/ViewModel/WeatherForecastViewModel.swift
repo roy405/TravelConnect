@@ -10,8 +10,8 @@ import Combine
 
 // Constants containing the API Key and Host for Weather.com API via RAPIDAPI
 struct Constants {
-    //static let RAPIDAPIKEY = "620035982dmshfefc0b106524436p1ef359jsn8f2cb31aa928"
-    //static let RAPIDAPIHOST = "weatherapi-com.p.rapidapi.com"
+    static let RAPIDAPIKEY = "9c1819d08cmsh0fbc0f906f51f3ap16345cjsn06d6282f8f77"
+    static let RAPIDAPIHOST = "weatherapi-com.p.rapidapi.com"
 }
 
 // Viewmodel for handling weather forecast
@@ -44,8 +44,8 @@ class WeatherForecastViewModel: ObservableObject {
         
         // Setting headers for RAPID API using the constants for authentication
         let headers = [
-            "X-RapidAPI-Key": "",//Constants.RAPIDAPIKEY,
-            "X-RapidAPI-Host": ""//Constants.RAPIDAPIHOST
+            "X-RapidAPI-Key": Constants.RAPIDAPIKEY,
+            "X-RapidAPI-Host": Constants.RAPIDAPIHOST
         ]
         // Encode city string to ensure it's safe for URL use
         let safeCityString = city.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? city
