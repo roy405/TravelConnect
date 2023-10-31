@@ -41,7 +41,7 @@ struct TripListView: View {
                     }
                     .swipeActions(edge: .leading) {
                         Button(action: {
-                            itemsToShare = [trip.type]  // Assuming your Trip object has a 'name' property
+                            itemsToShare = [UIImage(data:trip.topImage)]
                             showingShareSheet = true
                         }) {
                             ZStack {
@@ -60,6 +60,9 @@ struct TripListView: View {
             .listStyle(.plain)
             .onAppear{
                 tripDetailViewModel.fetchAllTrips(context: context)
+            }
+            .sheet(isPresented: $showingShareSheet) {
+                ActivityViewController(activityItems: itemsToShare)
             }
             .padding(.top)
             .navigationDestination(for: String.self) { targetView in
@@ -127,8 +130,6 @@ struct TripListView: View {
                     }
                 }
             }
-        }    .sheet(isPresented: $showingShareSheet) {
-            ActivityViewController(activityItems: itemsToShare)
         }
     }
 }
@@ -139,11 +140,10 @@ struct ActivityViewController: UIViewControllerRepresentable {
     let activityItems: [Any]
     let applicationActivities: [UIActivity]? = nil
 
-    func makeUIViewController(context: UIViewControllerRepresentableContext<ActivityViewController>) -> UIActivityViewController {
+    func makeUIViewController(context: Context) -> UIActivityViewController {
         let controller = UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities)
         return controller
     }
 
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: UIViewControllerRepresentableContext<ActivityViewController>) { }
 }
-

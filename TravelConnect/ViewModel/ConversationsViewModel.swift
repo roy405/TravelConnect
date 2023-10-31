@@ -60,9 +60,27 @@ class ConversationsViewModel: ObservableObject {
     }
     
     func fetchConversationByTrip(forTripID tripID: String, completion: @escaping (Conversation?) -> Void) {
+        
         // Assuming you store conversations in a collection named "conversations"
         let db = Firestore.firestore()
         db.collection("conversations").whereField("tripID", isEqualTo: tripID).getDocuments { (querySnapshot, error) in
+            guard let documents = querySnapshot?.documents, !documents.isEmpty else {
+                completion(nil)
+                return
+            }
+            // Here, I'm taking the first document, but you might want to handle it differently if there can be more than one
+            let document = documents[0]
+            let documentID = document.documentID
+            let documentData = document.data()
+            let conversation = Conversation(documentID: documentID, documentData: documentData)
+            completion(conversation)
+        }
+    }
+    
+    func fetchConversationByID(forID id: String, completion: @escaping (Conversation?) -> Void) {
+        // Assuming you store conversations in a collection named "conversations"
+        let db = Firestore.firestore()
+        db.collection("conversations").whereField("id", isEqualTo: id).getDocuments { (querySnapshot, error) in
             guard let documents = querySnapshot?.documents, !documents.isEmpty else {
                 completion(nil)
                 return
@@ -81,6 +99,8 @@ class ConversationsViewModel: ObservableObject {
     
     // Fetches messages of a conversation
     func fetchMessages(conversationCustomID: String) {
+        
+        var previousLength = messages.count
         // Finding  the document with the matching custom 'id'
         db.collection("conversations").whereField("id", isEqualTo: conversationCustomID).getDocuments { (querySnapshot, error) in
             if let error = error {
@@ -107,6 +127,16 @@ class ConversationsViewModel: ObservableObject {
                     return
                 }
                 
+                if messages.count > previousLength {
+                    let content = UNMutableNotificationContent()
+                    content.title = "New Message Alert"
+                    content.body = "You got a new message! at \(Date())"
+                    content.sound = UNNotificationSound.default
+                    
+                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                    UNUserNotificationCenter.current().add(request)
+                    print(previousLength,messages.count,"you got new")
+                }
                 // Map Firestore documents to Message objects
                 self.messages = messages.compactMap({ queryDocumentSnapshot -> Message? in
                     var data = queryDocumentSnapshot.data() as [String: Any]
@@ -390,6 +420,7 @@ class ConversationsViewModel: ObservableObject {
             completion(updatedConversation)
         }
     }
+    
 }
 
 
@@ -429,5 +460,7 @@ extension ConversationsViewModel {
             }
         }
     }
+    
+    
 }
 

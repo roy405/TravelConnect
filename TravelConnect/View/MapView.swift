@@ -29,12 +29,14 @@ struct MapView: View {
             span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
         )
     )
-    
     @State private var trip:Trip?
     @State var isEditingTripInfo:Bool = false
     @State var placeDescription:String = ""
     @State var timeOfVisit:Date = Date()
-    @State var placeType:String = "Swimming"
+    var placeType:String{
+        return tripTypes[selectedIndex]
+    }
+    @State var selectedIndex:Int = 0
     @State var isPickerVisible:Bool = false
     var tripTypes = ["walking","party","swimming","fishing","hiking","archery","biking","bird watching","camping","kayaking","outdooryoga","paddleboarding","rockclimbing","running","skateboarding","surfing","dining","shopping","parking","gaming"]
     let gradient = LinearGradient(
@@ -215,9 +217,9 @@ struct MapView: View {
                             Text("Activity Type")
                             Spacer()
                             
-                            Picker("Place Type Picker", selection: $placeType) {
-                                ForEach(tripTypes, id: \.self) { tripType in
-                                    Text(tripType).tag(tripType)
+                            Picker("Place Type Picker", selection: $selectedIndex) {
+                                ForEach(0..<tripTypes.count, id: \.self) { index in
+                                    Text(tripTypes[index]).tag(index)
                                 }
                             }
                             .pickerStyle(DefaultPickerStyle())

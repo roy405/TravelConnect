@@ -18,7 +18,6 @@ struct TripDetailView: View {
     @State var headings:[String] = ["Trip Description","Route Details","View On Map","Weather","Title"]
     @State var routeInfo:String?
     @State var topImage:UIImage?
-    @State var placesOfInterest:[String] = ["a","b","c","d"]
     @State var isTripInfoExpanded:Bool = true
     @State var isMapViewPresented:Bool = false
     @State var isEditingMode:Bool
@@ -33,11 +32,6 @@ struct TripDetailView: View {
     
     @State private var linkedConversation: Conversation?
     
-    @State var dummyForecasts: [Forecast] = [
-        Forecast(id: UUID(), date: Date(), maxtemp_c: 23.5, mintemp_c: 15.2, conditionText: "Sunny"),
-        Forecast(id: UUID(), date: Date().addingTimeInterval(86400), maxtemp_c: 25.0, mintemp_c: 17.3, conditionText: "Cloudy"),
-        Forecast(id: UUID(), date: Date().addingTimeInterval(172800), maxtemp_c: 20.4, mintemp_c: 14.0, conditionText: "Rainy")
-    ]
     
     var body: some View {
         ZStack{
@@ -121,9 +115,23 @@ struct TripDetailView: View {
                     
                     
                     if !isEditingMode{
-                        if tripDetailViewModel.hasConversationLinked(trip: tripDetailViewModel.currentViewingTrip), let linkedConversation {
-                            NavigationLink(destination: ChatView(conversation: linkedConversation)) {
-                                Text("Go to Conversation")
+                        if tripDetailViewModel.hasConversationLinked(trip: tripDetailViewModel.currentViewingTrip) {
+                            if let linkedConversation {
+                                NavigationLink(destination: ChatView(conversation: linkedConversation)) {
+                                    Text("Go to Conversation")
+                                        .font(.title3)
+                                        .frame(maxWidth:screenWidth)
+                                        .padding()
+                                        .background(Color(red: 0.0196, green: 0.2941, blue: 0.2863)).opacity(0.8)
+                                        .foregroundColor(Color.white)
+                                        .sticky()
+                                }
+                            }
+                        } else {
+                            NavigationLink(destination: ConversationSelectionView(selectedConversation: $selectedConversation, linkedConversation: $linkedConversation, currentUserEmail: authViewModel.currentUserEmail)
+                                .environmentObject(conversationViewModel)
+                            ) {
+                                Text("Link to Conversation")
                                     .font(.title3)
                                     .frame(maxWidth:screenWidth)
                                     .padding()
@@ -131,26 +139,23 @@ struct TripDetailView: View {
                                     .foregroundColor(Color.white)
                                     .sticky()
                             }
-                        } else {
-                            Button("Link to Conversation") {
-                                self.showConversations.toggle()
-                            }
-                            .sheet(isPresented: $showConversations) {
-                                ConversationSelectionView(selectedConversation: $selectedConversation, currentUserEmail: authViewModel.currentUserEmail)
-                                    .environmentObject(conversationViewModel)
-                                    .onDisappear {
-                                        if let selectedConv = selectedConversation {
-                                            tripDetailViewModel.updateTripWithConversationID(tripID: tripDetailViewModel.currentViewingTrip.id, conversationID: selectedConv.id, context: context)
-                                            // Also update the conversation with the tripID
-                                            // TODO: Add code to update conversation with tripID
-                                        }
+                            .onChange(of:selectedConversation){
+                                if let selectedConversation {
+                                    tripDetailViewModel.updateTripWithConversationID(tripID: tripDetailViewModel.currentViewingTrip.id, conversationID: selectedConversation.id, context: context)
+                                    conversationViewModel.updateConversationWithTripIDUsingInternalID(internalID: selectedConversation.id, tripID: tripDetailViewModel.currentViewingTrip.id.uuidString){result in
+                                           switch result {
+                                           case .success():
+                                               print("Conversation updated successfully with TripID.")
+                                           case .failure(let error):
+                                               print("Error updating conversation with TripID:", error)
+                                           }
                                     }
+                                    tripDetailViewModel.fetchAllTrips(context: context)
+                                    linkedConversation = selectedConversation
+                                }
                             }
                         }
                     }
-                    
-                    
-                    
                     
                     
                     //MARK: - Route Info Section

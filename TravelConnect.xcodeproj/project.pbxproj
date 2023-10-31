@@ -73,6 +73,7 @@
 		1CDB07E42AEA98BA002A5EEA /* ConversationListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDB07E32AEA98BA002A5EEA /* ConversationListView.swift */; };
 		1CDB07E62AEA990F002A5EEA /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDB07E52AEA990F002A5EEA /* ChatView.swift */; };
 		1CDB07E82AEB21BD002A5EEA /* NewConversationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDB07E72AEB21BD002A5EEA /* NewConversationView.swift */; };
+		EEC0321B2AF185E10094B0DB /* DarkModeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0321A2AF185E10094B0DB /* DarkModeModel.swift */; };
 		EEDD892E2AF038A30051A6B9 /* loadVid.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = EEDD892D2AF038A30051A6B9 /* loadVid.mp4 */; };
 		EEDD89322AF039140051A6B9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EEDD89312AF039140051A6B9 /* GoogleService-Info.plist */; };
 		EEDD89342AF03AB10051A6B9 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDD89332AF03AB10051A6B9 /* Persistence.swift */; };
@@ -125,6 +126,7 @@
 		1CDB07E32AEA98BA002A5EEA /* ConversationListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationListView.swift; sourceTree = "<group>"; };
 		1CDB07E52AEA990F002A5EEA /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		1CDB07E72AEB21BD002A5EEA /* NewConversationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewConversationView.swift; sourceTree = "<group>"; };
+		EEC0321A2AF185E10094B0DB /* DarkModeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarkModeModel.swift; sourceTree = "<group>"; };
 		EEDD892D2AF038A30051A6B9 /* loadVid.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = loadVid.mp4; path = TravelConnect/loadVid.mp4; sourceTree = "<group>"; };
 		EEDD89312AF039140051A6B9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		EEDD89332AF03AB10051A6B9 /* Persistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
@@ -245,6 +247,7 @@
 				1CBEB27F2AEE4BD1005669EC /* Interests.swift */,
 				1CBEB2872AEE8DBA005669EC /* ForecastModel.swift */,
 				1CBEB2892AEE8DD9005669EC /* ForecastAPIModel.swift */,
+				EEC0321A2AF185E10094B0DB /* DarkModeModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -478,6 +481,7 @@
 				EEDD894A2AF03C290051A6B9 /* ImageGalleryView.swift in Sources */,
 				1CBEB28F2AEF5DEA005669EC /* AnimationPlayerView.swift in Sources */,
 				EEDD89342AF03AB10051A6B9 /* Persistence.swift in Sources */,
+				EEC0321B2AF185E10094B0DB /* DarkModeModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -612,7 +616,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"TravelConnect/Preview Content\"";
-				DEVELOPMENT_TEAM = 5GZC5WLRP3;
+				DEVELOPMENT_TEAM = 37NUP3CV36;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TravelConnect/Info.plist;
@@ -645,7 +649,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"TravelConnect/Preview Content\"";
-				DEVELOPMENT_TEAM = 5GZC5WLRP3;
+				DEVELOPMENT_TEAM = 37NUP3CV36;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TravelConnect/Info.plist;

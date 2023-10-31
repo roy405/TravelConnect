@@ -14,11 +14,6 @@ struct RecommendationsView: View {
     
     var body: some View {
         VStack {
-//            // Title for recommendations section.
-//            Text("Recommendations")
-//                .font(.largeTitle)
-//                .padding(.top)
-            
             List {
                 // Section for recommended TripBuddies.
                 Section(header: Text("TripBuddies")) {
@@ -26,14 +21,7 @@ struct RecommendationsView: View {
                         Text(user)
                     }
                 }
-                
-                // Section for recommended places.
-                // Currently uses placeholder data.
-                Section(header: Text("Places")) {
-                    ForEach(["Place 1", "Place 2", "Place 3"], id: \.self) { place in
-                        Text(place)
-                    }
-                }
+    
             }
             .navigationTitle("Recommendations")
             .navigationBarTitleDisplayMode(.inline)

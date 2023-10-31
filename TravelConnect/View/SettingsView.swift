@@ -13,15 +13,23 @@ struct SettingsView: View {
     @ObservedObject var viewModel: AuthViewModel
     // View model responsible for user profile-related actions and data.
     @ObservedObject var userProfileViewModel = UserProfileViewModel(authViewModel: AuthViewModel())
+    @AppStorage("darkModeEnabled") var darkModeEnabled = false
+    @State private var pushNotificationsEnabled = false
     
     var body: some View {
         // A list to display different settings sections.
         List {
             // General settings section.
             Section(header: Text("General")) {
-                Text("Item 1")
-                Text("Item 2")
-                Text("Item 3")
+                HStack{
+                    Image(systemName: "moon")
+                        .padding(.trailing)
+                        .foregroundColor(.blue)
+                    Toggle("Dark Mode", isOn: $darkModeEnabled)
+                        .onChange(of: darkModeEnabled){oldVal, newVal in
+                            DarkModeModel.toggleDarkMode(newVal: newVal)
+                        }
+                }
             }
             // Section to navigate and view user's profile.
             Section(header: Text("User Profile")) {

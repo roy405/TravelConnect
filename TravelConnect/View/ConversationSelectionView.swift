@@ -9,13 +9,18 @@ import SwiftUI
 
 struct ConversationSelectionView: View {
     @EnvironmentObject var conversationViewModel: ConversationsViewModel
+    @Environment(\.dismiss) var dismiss
     @Binding var selectedConversation: Conversation?
+    @Binding var linkedConversation:Conversation?
     var currentUserEmail: String?
 
     var body: some View {
         List(conversationViewModel.conversations, id: \.id) { conversation in
             Button(action: {
                 self.selectedConversation = conversation
+                self.linkedConversation = conversation
+                print(conversation.id)
+                dismiss()
             }) {
                 Text(conversation.displayName)
             }

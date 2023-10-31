@@ -27,6 +27,7 @@ struct ConversationsListView: View {
     // Environemnt Object for Trip View Model
     @EnvironmentObject var tripDetailViewModel: TripDetailViewModel
     @EnvironmentObject var mapViewModel: MapViewModel
+    @EnvironmentObject var authViewModel: AuthViewModel
     
     var body: some View {
         List(conversationViewModel.conversations) { conversation in
@@ -34,6 +35,7 @@ struct ConversationsListView: View {
                 .environmentObject(tripDetailViewModel)
                 .environmentObject(mapViewModel)
                 .environmentObject(conversationViewModel)
+                .environmentObject(authViewModel)
             ) {
                 HStack(spacing: 15) {
                     // Display a circle avatar with the initial of the conversation display name.
@@ -67,7 +69,6 @@ struct ConversationsListView: View {
         .listStyle(.plain)
         .onAppear { // Fetch conversations when the view appears.
             if let user = conversationViewModel.authViewModel.currentUserEmail {
-                print(user)
                 conversationViewModel.fetchConversations(email: user)
             }
         }

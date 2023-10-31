@@ -14,6 +14,7 @@ struct ChatView: View {
     @EnvironmentObject var conversationViewModel: ConversationsViewModel
     @EnvironmentObject var tripDetailViewModel: TripDetailViewModel
     @EnvironmentObject var mapViewModel: MapViewModel
+    @EnvironmentObject var authViewModel: AuthViewModel
     // Current chat conversation.
     var conversation: Conversation
     
@@ -100,12 +101,16 @@ struct ChatView: View {
                         .environmentObject(tripDetailViewModel)
                         .environmentObject(mapViewModel)
                         .environmentObject(conversationViewModel)
+                        .environmentObject(authViewModel)
                 }
             }
         }
         .onAppear {
             conversationViewModel.fetchMessages(conversationCustomID: conversation.id)
             print(1,conversationViewModel.messages)
+        }
+        .onTapGesture {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         }
     }
 }

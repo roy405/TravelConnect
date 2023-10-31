@@ -49,12 +49,46 @@ struct TravelConnectApp: App {
 }
 
 // AppDelegate to configure and setup services when the app launches.
-class AppDelegate: NSObject, UIApplicationDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate{
+    
+    var window: UIWindow?
     // This method is called when the app completes its launch.
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Configure Firebase when the app starts.
         FirebaseApp.configure()
+        UNUserNotificationCenter.current().delegate = self
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if granted {
+                DispatchQueue.main.async {
+                    application.registerForRemoteNotifications()
+                }
+            }
+        }
+        
+        // Initialize your main view controller
+        let mainViewController = UIHostingController(rootView: ContentView(viewModel: AuthViewModel()))
+
+        // Create a UIWindow and set the main view controller as the root view controller
+        self.window = UIWindow(frame: UIScreen.main.bounds)
+        self.window?.rootViewController = mainViewController
+        self.window?.makeKeyAndVisible()
+        
+        
         return true
     }
+    
+    // Handle user's response to the notification
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        // Handle user's response to the notification, e.g., open the main view
+        if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
+            // The user tapped the notification, open the main view
+            if let window = self.window {
+                window.rootViewController = UIHostingController(rootView: ContentView(viewModel: AuthViewModel()))
+            }
+        }
+        completionHandler()
+    }
+    
+
 }
 

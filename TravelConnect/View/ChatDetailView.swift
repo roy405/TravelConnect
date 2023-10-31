@@ -16,6 +16,7 @@ struct ChatDetailView: View {
     // Viewmodel for all things trip
     @EnvironmentObject var tripDetailViewModel: TripDetailViewModel
     @EnvironmentObject var mapViewModel: MapViewModel
+    @EnvironmentObject var authViewModel: AuthViewModel
     // State for editable chat name to allow renaming of the chat
     @State private var editableChatName: String
     // State for a mutable version of the conversation for any updates made within the view
@@ -23,7 +24,7 @@ struct ChatDetailView: View {
     // Variable for showing the trip list
     @State private var showTripList: Bool = false
     @State private var showTripDetail: Bool = false
-
+    
     
     
     // Initializer to setup initial values and inject necessary dependencies
@@ -83,16 +84,16 @@ struct ChatDetailView: View {
                     // Chat Detail button that is dynamic based on the status of a trip being linked to the chat.
                     if mutableConversation.tripID == nil {
                         Button(action: {
-                            print("Link Trip Button Pressed")
                             // Toggle the list after fetching the trips.
                             self.showTripList.toggle()
                         }) {
                             Text("Link Trip")
-                                .frame(maxWidth: .infinity, minHeight: 44)
+                                .frame(width:UIScreen.main.bounds.width - 20,height:50)
                                 .background(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
                         }
+                        .padding(.all,10)
                         .sheet(isPresented: $showTripList) {
                             TripSelectListView(trips: $tripDetailViewModel.allTrips, selectedTrip: { trip in
                                 // Handle the trip selection
@@ -119,15 +120,17 @@ struct ChatDetailView: View {
                                 .font(.headline)
                                 .padding()
                             NavigationLink(destination: TripDetailView(trip: linkedTrip, isEditingMode: false)
+                                .environmentObject(authViewModel)
                                 .environmentObject(mapViewModel)
                                 .environmentObject(tripDetailViewModel), isActive: $showTripDetail) {
                                     Text("View Trip Details")
-                                        .frame(maxWidth: 350, minHeight: 44)
+                                        .frame(width:UIScreen.main.bounds.width - 20,height:50)
                                         .background(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
                                         .foregroundColor(.white)
                                         .cornerRadius(10)
+                                    
                                 }
-                                .padding(.bottom)
+                                .padding(.all,10)
                         }
                     }
                     

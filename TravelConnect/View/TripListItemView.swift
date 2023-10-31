@@ -30,11 +30,11 @@ struct TripListItemView: View {
                             Text(trip?.type ?? "Title")
                                 .font(.title3)
                                 .bold()
-                                .foregroundColor(.primary)
+                                .foregroundColor(.black)
                                 .multilineTextAlignment(.leading)
                             Spacer()
                             Text(trip?.dateString ?? "Time")
-                                .foregroundColor(.primary)
+                                .foregroundColor(.black)
                         }
                         Text(trip?.tripInfo ?? "TripInfo")
                             .multilineTextAlignment(.leading)

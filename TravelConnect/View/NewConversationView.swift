@@ -74,7 +74,7 @@ struct NewConversationView: View {
                     }
                     .buttonStyle(PlainButtonStyle())
                     .frame(width:UIScreen.main.bounds.width * 0.45,height:50)
-                    .background(Color.blue)
+                    .background(Color(red: 0.0196, green: 0.2941, blue: 0.2863).opacity(0.6))
                     .foregroundColor(.white)
                     .cornerRadius(8)
                     
@@ -100,14 +100,18 @@ struct NewConversationView: View {
                     .disabled(!allEmailsValid)
                     .buttonStyle(PlainButtonStyle())
                     .frame(width:UIScreen.main.bounds.width * 0.45, height: 50)
-                    .background(allEmailsValid ? Color.green : Color.gray)
+                    .background(allEmailsValid ? Color(red: 0.0196, green: 0.2941, blue: 0.2863) : Color(red: 0.0196, green: 0.2941, blue: 0.2863).opacity(0.2))
                     .foregroundColor(.white)
                     .cornerRadius(8)
+                    Spacer()
                 }
                 .alert(isPresented: $showAlert) {
                     Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
                 }
                 
+            }
+            .onTapGesture {
+                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
             }
             .padding(.all,20)
             .navigationBarTitle("New Conversation", displayMode: .inline)
