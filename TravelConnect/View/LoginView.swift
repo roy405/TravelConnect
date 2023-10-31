@@ -43,14 +43,14 @@ struct LoginView: View {
                         .foregroundColor(.white)
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(Color.blue)
+                        .background(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
                         .cornerRadius(15)
                 }
                 .padding(.horizontal, 20)
                 // Navigation link to switch to the registration view.
                 NavigationLink(destination: RegistrationView(viewModel: viewModel)) {
                     Text("Register")
-                        .foregroundColor(.blue)
+                        .foregroundColor(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
                 }
                 
                 Spacer()

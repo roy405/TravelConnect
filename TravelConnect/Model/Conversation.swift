@@ -8,7 +8,7 @@
 import Foundation
 
 // Represents a conversation within the chat application.
-struct Conversation: Identifiable {
+struct Conversation: Hashable, Identifiable {
     // Varialbles related to Conversation Model
     var documentID: String = ""
     var id: String

@@ -39,7 +39,7 @@ struct ConversationsListView: View {
                     // Display a circle avatar with the initial of the conversation display name.
                     Circle()
                         .frame(width: 50, height: 50)
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
                         .overlay(
                             Text(conversation.displayName.prefix(1))
                                 .foregroundColor(.white)

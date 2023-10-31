@@ -61,7 +61,7 @@ struct ContentView: View {
             .tabItem {
                 Label("Settings", systemImage: "gearshape")
             }
-        }
+        }.accentColor(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
     }
 }
 

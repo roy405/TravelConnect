@@ -13,6 +13,10 @@ struct TripListView: View {
     @EnvironmentObject var conversationViewModel: ConversationsViewModel
     @EnvironmentObject var authViewModel: AuthViewModel
     @Environment(\.managedObjectContext) private var context
+    
+    @State private var showingShareSheet = false
+    @State private var itemsToShare: [Any] = []
+
     var body: some View {
         NavigationStack{
             List{
@@ -37,9 +41,10 @@ struct TripListView: View {
                     }
                     .swipeActions(edge: .leading) {
                         Button(action: {
-                            print("Publish Route")
+                            itemsToShare = [trip.type]  // Assuming your Trip object has a 'name' property
+                            showingShareSheet = true
                         }) {
-                            ZStack{
+                            ZStack {
                                 Label("Share", systemImage: "square.and.arrow.up")
                             }
                         }
@@ -122,10 +127,23 @@ struct TripListView: View {
                     }
                 }
             }
+        }    .sheet(isPresented: $showingShareSheet) {
+            ActivityViewController(activityItems: itemsToShare)
         }
     }
 }
 
-#Preview {
-    TripListView()
+
+// Share modal
+struct ActivityViewController: UIViewControllerRepresentable {
+    let activityItems: [Any]
+    let applicationActivities: [UIActivity]? = nil
+
+    func makeUIViewController(context: UIViewControllerRepresentableContext<ActivityViewController>) -> UIActivityViewController {
+        let controller = UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities)
+        return controller
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: UIViewControllerRepresentableContext<ActivityViewController>) { }
 }
+

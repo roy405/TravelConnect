@@ -22,6 +22,8 @@ struct ChatDetailView: View {
     @State private var mutableConversation: Conversation
     // Variable for showing the trip list
     @State private var showTripList: Bool = false
+    @State private var showTripDetail: Bool = false
+
     
     
     // Initializer to setup initial values and inject necessary dependencies
@@ -40,10 +42,12 @@ struct ChatDetailView: View {
                         Image(systemName: "person.crop.circle")
                             .resizable()
                             .frame(width: 50, height: 50)
+                            .foregroundStyle(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
                         Text(mutableConversation.displayName)
                             .font(.title)
                             .fontWeight(.bold)
                             .padding(.leading)
+                            .foregroundStyle(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
                     }
                     .padding(.vertical)
                     .padding(.leading,10)
@@ -85,7 +89,7 @@ struct ChatDetailView: View {
                         }) {
                             Text("Link Trip")
                                 .frame(maxWidth: .infinity, minHeight: 44)
-                                .background(Color.blue)
+                                .background(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
                         }
@@ -116,10 +120,10 @@ struct ChatDetailView: View {
                                 .padding()
                             NavigationLink(destination: TripDetailView(trip: linkedTrip, isEditingMode: false)
                                 .environmentObject(mapViewModel)
-                                .environmentObject(tripDetailViewModel)) {
+                                .environmentObject(tripDetailViewModel), isActive: $showTripDetail) {
                                     Text("View Trip Details")
-                                        .frame(maxWidth: .infinity, minHeight: 44)
-                                        .background(Color.blue)
+                                        .frame(maxWidth: 350, minHeight: 44)
+                                        .background(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
                                         .foregroundColor(.white)
                                         .cornerRadius(10)
                                 }
@@ -154,6 +158,7 @@ struct ChatDetailView: View {
                                 Image(systemName: "person.2")
                                     .imageScale(.large)
                                 Text("Collaboration details here")
+                                    .foregroundStyle(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
                             }
                         }
                     }
@@ -166,6 +171,7 @@ struct ChatDetailView: View {
                                 Image(systemName: "map")
                                     .imageScale(.large)
                                 Text("Route details here")
+                                    .foregroundStyle(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
                             }
                         }
                     }
@@ -178,6 +184,7 @@ struct ChatDetailView: View {
                                 Image(systemName: "note.text")
                                     .imageScale(.large)
                                 Text("Notes details here")
+                                    .foregroundStyle(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
                             }
                         }
                     }
@@ -190,6 +197,7 @@ struct ChatDetailView: View {
                                 Image(systemName: "doc")
                                     .imageScale(.large)
                                 Text("Shared file details here")
+                                    .foregroundStyle(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
                             }
                         }
                     }
@@ -198,6 +206,7 @@ struct ChatDetailView: View {
                     Spacer()
                 }
                 .padding()
+                .foregroundColor(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
             }
             .onAppear {
                 tripDetailViewModel.fetchAllTrips(context: PersistenceController.shared.container.viewContext)
@@ -207,6 +216,7 @@ struct ChatDetailView: View {
             }}
     }
 }
+
 
 // Generic SectionView
 struct SectionView<Content: View>: View {

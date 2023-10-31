@@ -19,7 +19,7 @@ struct TripSelectListView: View {
             }) {
                 Text(trip.type)
             }
-        }
+        }.foregroundColor(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
     }
 }
 

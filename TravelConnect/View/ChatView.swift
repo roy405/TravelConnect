@@ -36,20 +36,10 @@ struct ChatView: View {
     var body: some View {
         NavigationView{
             VStack(spacing: 1) {
-//                // Navigation link to detailed chat view.
-//                NavigationLink(destination: ChatDetailView(conversation: conversation, viewModel: viewModel)) {
-//                    Text(conversation.displayName)
-//                        .font(.title2)
-//                        .padding(.vertical, 8)
-//                }
-//                .background(Color.gray.opacity(0.1))
-//                .cornerRadius(10)
-                // Display all the messages in the chat.
                 List(conversationViewModel.messages, id: \.id) { message in
                     MessageView(message: message, currentUserID: currentUserID)
                 }
                 .padding(.bottom, 10)
-                
                 HStack(spacing: 10) {
                     // Button to display a modal to share content.
                     Button(action: {
@@ -85,7 +75,7 @@ struct ChatView: View {
                     }
                     .frame(minWidth: 50)
                     .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
-                    .background(Color.blue)
+                    .background(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
                     .foregroundColor(.white)
                     .cornerRadius(15)
                 }
@@ -149,8 +139,9 @@ struct MessageView: View {
                     Spacer()
                     Text(message.text ?? "")
                         .padding()
-                        .background(Color.blue.opacity(0.2))
+                        .background(Color(red: 0.0196, green: 0.2941, blue: 0.2863).opacity(0.7))
                         .cornerRadius(15)
+                        .foregroundColor(Color.white)
                 } else {
                     Text(message.text ?? "")
                         .padding()

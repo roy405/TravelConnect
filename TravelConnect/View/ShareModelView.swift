@@ -97,6 +97,7 @@ struct ShareModalView: View {
                 }
             }
             .background(Color.white) // set the background color of the modal content
+            .foregroundColor(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
             .cornerRadius(20) // round the corners for better appearance
         }
         .edgesIgnoringSafeArea(.all) // ignore safe areas for full-screen appearance

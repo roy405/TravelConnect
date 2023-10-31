@@ -32,8 +32,6 @@ struct TripDetailView: View {
     @State private var selectedConversation: Conversation? = nil
     
     @State private var linkedConversation: Conversation?
-
-    @State private var showChatView: Bool = false
     
     @State var dummyForecasts: [Forecast] = [
         Forecast(id: UUID(), date: Date(), maxtemp_c: 23.5, mintemp_c: 15.2, conditionText: "Sunny"),
@@ -66,7 +64,7 @@ struct TripDetailView: View {
                                     Image(systemName: "pencil")
                                     Text("Select An Image")
                                 }
-                                .foregroundColor(.blue)
+                                .foregroundColor(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
                                 .padding()
                             }
                         }
@@ -88,7 +86,8 @@ struct TripDetailView: View {
                             .font(.title3)
                             .frame(maxWidth:screenWidth)
                             .padding()
-                            .background(Color.teal)
+                            .background(Color(red: 0.0196, green: 0.2941, blue: 0.2863)).opacity(0.8)
+                            .foregroundColor(Color.white)
                             .sticky()
                         if (isEditingMode){
                             ZStack{
@@ -103,7 +102,7 @@ struct TripDetailView: View {
                                         Text(isEditingTitleInfo ? "Save":"Edit Title")
                                     }
                                 })
-                                .foregroundColor(.blue)
+                                .foregroundColor(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
                                 .padding()
                             }
                         }
@@ -121,35 +120,34 @@ struct TripDetailView: View {
                     }
                     
                     
-                    
-                    
-                    // Conversations BUTTON HERE
-                    if tripDetailViewModel.hasConversationLinked(trip: tripDetailViewModel.currentViewingTrip), let linkedConversation {
-                        NavigationLink(destination: ChatView(conversation: linkedConversation), isActive: $showChatView) {
-                            Text("Go to Conversation")
-                                .font(.title3)
-                                .frame(maxWidth:screenWidth)
-                                .padding()
-                                .background(Color.teal)
-                                .sticky()
-                        }
-                    } else {
-                        Button("Link to Conversation") {
-                            self.showConversations.toggle()
-                        }
-                        .sheet(isPresented: $showConversations) {
-                            ConversationSelectionView(selectedConversation: $selectedConversation, currentUserEmail: authViewModel.currentUserEmail)
-                                .environmentObject(conversationViewModel)
-                                .onDisappear {
-                                    if let selectedConv = selectedConversation {
-                                        tripDetailViewModel.updateTripWithConversationID(tripID: tripDetailViewModel.currentViewingTrip.id, conversationID: selectedConv.id, context: context)
-                                        // Also update the conversation with the tripID
-                                        // TODO: Add code to update conversation with tripID
+                    if !isEditingMode{
+                        if tripDetailViewModel.hasConversationLinked(trip: tripDetailViewModel.currentViewingTrip), let linkedConversation {
+                            NavigationLink(destination: ChatView(conversation: linkedConversation)) {
+                                Text("Go to Conversation")
+                                    .font(.title3)
+                                    .frame(maxWidth:screenWidth)
+                                    .padding()
+                                    .background(Color(red: 0.0196, green: 0.2941, blue: 0.2863)).opacity(0.8)
+                                    .foregroundColor(Color.white)
+                                    .sticky()
+                            }
+                        } else {
+                            Button("Link to Conversation") {
+                                self.showConversations.toggle()
+                            }
+                            .sheet(isPresented: $showConversations) {
+                                ConversationSelectionView(selectedConversation: $selectedConversation, currentUserEmail: authViewModel.currentUserEmail)
+                                    .environmentObject(conversationViewModel)
+                                    .onDisappear {
+                                        if let selectedConv = selectedConversation {
+                                            tripDetailViewModel.updateTripWithConversationID(tripID: tripDetailViewModel.currentViewingTrip.id, conversationID: selectedConv.id, context: context)
+                                            // Also update the conversation with the tripID
+                                            // TODO: Add code to update conversation with tripID
+                                        }
                                     }
-                                }
+                            }
                         }
                     }
-                    // Conversations BUTTON HERE
                     
                     
                     
@@ -160,7 +158,8 @@ struct TripDetailView: View {
                         .font(.title3)
                         .frame(maxWidth:screenWidth)
                         .padding()
-                        .background(Color.teal)
+                        .background(Color(red: 0.0196, green: 0.2941, blue: 0.2863)).opacity(0.8)
+                        .foregroundColor(Color.white)
                         .sticky()
                     if (isEditingMode){
                         ZStack{
@@ -175,7 +174,7 @@ struct TripDetailView: View {
                                     Text(isEditingTripInfo ? "Save":"Edit Trip Description")
                                 }
                             })
-                            .foregroundColor(.blue)
+                            .foregroundColor(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
                             .padding()
                         }
                     }
@@ -198,7 +197,8 @@ struct TripDetailView: View {
                             .font(.title3)
                             .frame(maxWidth:screenWidth)
                             .padding()
-                            .background(Color.teal)
+                            .background(Color(red: 0.0196, green: 0.2941, blue: 0.2863)).opacity(0.8)
+                            .foregroundColor(Color.white)
                         HStack {
                             Spacer()
                             Button(action: {
@@ -223,7 +223,7 @@ struct TripDetailView: View {
                                     Image(systemName: "plus")
                                     Text("Add a route")
                                 }
-                                .foregroundColor(.blue)
+                                .foregroundColor(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
                                 .padding()
                                 .zIndex(/*@START_MENU_TOKEN@*/1.0/*@END_MENU_TOKEN@*/)
                             }
@@ -258,7 +258,8 @@ struct TripDetailView: View {
                             .font(.title3)
                             .frame(maxWidth:screenWidth)
                             .padding()
-                            .background(Color.teal)
+                            .background(Color(red: 0.0196, green: 0.2941, blue: 0.2863)).opacity(0.8)
+                            .foregroundColor(Color.white)
                             .sticky()
                         NavigationLink(value:"Map View"){
                             ZStack {
@@ -277,7 +278,8 @@ struct TripDetailView: View {
                             .font(.title3)
                             .frame(maxWidth:screenWidth)
                             .padding()
-                            .background(Color.teal)
+                            .background(Color(red: 0.0196, green: 0.2941, blue: 0.2863)).opacity(0.8)
+                            .foregroundStyle(Color.white)
                             .sticky()
                         ScrollView(.horizontal){
                             HStack(spacing: 20) {
@@ -317,7 +319,6 @@ struct TripDetailView: View {
                     // Fetch the conversation for the trip when the button is pressed
                     conversationViewModel.fetchConversationByTrip(forTripID: tripIDString) { conversation in
                         self.linkedConversation = conversation
-                        self.showChatView = true
                     }
                 }
                 

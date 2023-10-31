@@ -59,7 +59,7 @@ class TripDetailViewModel:ObservableObject {
             trip.date = tripRecord.date!
             trip.tripInfo = tripRecord.tripInfo!
             if let conversationID = tripRecord.conversationID {
-                trip.conversationID = tripRecord.conversationID!
+                trip.conversationID = conversationID
             }
             var placeOfInterest:[PlaceOfInterest] = []
             if let placeOfInterestSet = tripRecord.placeOfInterest as? Set<PlaceOfInterestRecord>{

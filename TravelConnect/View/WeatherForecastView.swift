@@ -47,7 +47,7 @@ struct DayWeatherView: View {
         }
         .foregroundColor(.white)
         .frame(width: 200,height: 200)
-        .background(Color.blue)
+        .background(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
         .cornerRadius(10)
         .shadow(color: .gray.opacity(0.3), radius: 5, x: 0, y: 2)
         .padding()

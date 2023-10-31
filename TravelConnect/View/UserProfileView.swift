@@ -82,7 +82,7 @@ struct UserProfileView: View {
             .scaledToFit()
             .frame(width: 120, height: 120)
             .clipShape(Circle())
-            .overlay(Circle().stroke(Color.blue, lineWidth: 3))
+            .overlay(Circle().stroke(Color(red: 0.0196, green: 0.2941, blue: 0.2863), lineWidth: 3))
             .shadow(radius: 5)
             .padding(.bottom, 20)
     }
@@ -106,7 +106,7 @@ struct UserProfileView: View {
                     Text("Add Interest")
                     Spacer()
                     Image(systemName: "plus.circle.fill")
-                        .foregroundColor(.blue)
+                        .foregroundColor(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
                 }
             }
             .sheet(isPresented: $showingInterestsSheet) {
@@ -156,7 +156,7 @@ struct UserProfileView: View {
                         }
                     }
                 }
-            }
+            }.foregroundColor(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
         }
     }
     
@@ -229,7 +229,7 @@ struct UserProfileView: View {
             Text(isEditing ? "Save Changes" : "Edit Profile")
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(Color.blue)
+                .background(Color(red: 0.0196, green: 0.2941, blue: 0.2863))
                 .foregroundColor(.white)
                 .cornerRadius(10)
         }
@@ -275,7 +275,7 @@ struct UserProfileView: View {
             Text("Reset Password")
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(Color.orange)
+                .background(Color.gray)
                 .foregroundColor(.white)
                 .cornerRadius(10)
         }
