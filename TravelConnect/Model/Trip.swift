@@ -11,6 +11,7 @@ import CoreData
 
 struct Trip: Hashable, Codable, Identifiable {
     var id:UUID = UUID()
+    var conversationID: String?
     var type:String = ""
     var date:Date = Date()
     var dateString:String{

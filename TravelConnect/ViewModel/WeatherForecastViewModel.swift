@@ -24,11 +24,12 @@ class WeatherForecastViewModel: ObservableObject {
     
     /// Fetches the weather forecast data for a given city and updates the view model's properties.
     /// - Parameter city: The city for which the weather data is required.
-    func getWeatherForecastData(city: String) {
+    func getWeather(city: String) {
         getWeatherForecastData(city: city)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
+                    print("finished")
                     break
                 case .failure(let error):
                     print("Error retrieving weather data: \(error)")
@@ -84,8 +85,10 @@ class WeatherForecastViewModel: ObservableObject {
                 }
                 
                 // Update the view model's properties
-                self.forecastLocation = locationModel
-                self.forecasts = forecasts
+                DispatchQueue.main.async{
+                    self.forecastLocation = locationModel
+                    self.forecasts = forecasts
+                }
             }
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()

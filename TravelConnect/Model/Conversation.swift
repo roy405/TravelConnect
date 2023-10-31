@@ -15,6 +15,8 @@ struct Conversation: Identifiable {
     var memberEmails: [String]
     var displayName: String
     var isGroup: Bool
+    var tripID: UUID?
+
     
     // Initializer for creating a conversation from given parameters.
     init(documentID: String, id: String, memberEmails: [String], displayName: String, isGroup: Bool) {
@@ -46,15 +48,23 @@ struct Conversation: Identifiable {
         self.memberEmails = memberEmails
         self.displayName = displayName
         self.isGroup = isGroup
+        
+        if let tripIDString = documentData["tripID"] as? String, let tripUUID = UUID(uuidString: tripIDString) {
+            self.tripID = tripUUID
+        }
     }
     
     // Convert the conversation object to a dictionary.
     func toDictionary() -> [String: Any] {
-        return [
+        var dictionary: [String: Any] = [
             "id": id,
             "memberEmails": memberEmails,
             "displayName": displayName,
             "isGroup": isGroup
         ]
+        if let tripID = tripID {
+            dictionary["tripID"] = tripID.uuidString
+        }
+        return dictionary
     }
 }

@@ -18,7 +18,9 @@
         <relationship name="placeOfInterestChild" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TripRecord" inverseName="placeOfInterest" inverseEntity="TripRecord"/>
     </entity>
     <entity name="TripRecord" representedClassName="TripRecord" syncable="YES" codeGenerationType="class">
+        <attribute name="conversationID" optional="YES" attributeType="String"/>
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="topImage" optional="YES" attributeType="Binary"/>
         <attribute name="tripInfo" optional="YES" attributeType="String"/>
         <attribute name="type" optional="YES" attributeType="String"/>

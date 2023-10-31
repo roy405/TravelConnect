@@ -42,6 +42,7 @@ struct PersistenceController {
     //MARK: - Construct Record
     func buildTripRecordItem(trip:Trip,context:NSManagedObjectContext){
         let tripRecordItem = TripRecord(context: context)
+        tripRecordItem.id = trip.id 
         tripRecordItem.type = trip.type
         tripRecordItem.date = trip.date
         tripRecordItem.tripInfo = trip.tripInfo

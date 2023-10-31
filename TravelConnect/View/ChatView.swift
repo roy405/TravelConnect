@@ -10,8 +10,10 @@ import FirebaseAuth
 import SDWebImageSwiftUI
 
 struct ChatView: View {
-    // Observable object to fetch and handle conversation data.
-    @ObservedObject var viewModel: ConversationsViewModel
+    // Observable object to fetch and handle conversation data and for trip information.
+    @EnvironmentObject var conversationViewModel: ConversationsViewModel
+    @EnvironmentObject var tripDetailViewModel: TripDetailViewModel
+    @EnvironmentObject var mapViewModel: MapViewModel
     // Current chat conversation.
     var conversation: Conversation
     
@@ -27,7 +29,7 @@ struct ChatView: View {
     
     // Property to get current user's ID.
     var currentUserID: String {
-        viewModel.currentUserID
+        conversationViewModel.currentUserID
     }
     
     
@@ -43,7 +45,7 @@ struct ChatView: View {
 //                .background(Color.gray.opacity(0.1))
 //                .cornerRadius(10)
                 // Display all the messages in the chat.
-                List(viewModel.messages, id: \.id) { message in
+                List(conversationViewModel.messages, id: \.id) { message in
                     MessageView(message: message, currentUserID: currentUserID)
                 }
                 .padding(.bottom, 10)
@@ -62,7 +64,7 @@ struct ChatView: View {
                         ShareModalView(
                             selectedImage: $selectedImage,
                             showImagePicker: $showImagePickerFromModal,
-                            viewModel: viewModel,
+                            viewModel: conversationViewModel,
                             conversation: conversation
                         )
                     }
@@ -78,7 +80,7 @@ struct ChatView: View {
                         .layoutPriority(1)
                     
                     Button("Send") {
-                        viewModel.sendMessage(conversation: conversation, text: messageText, senderID: Auth.auth().currentUser?.uid ?? "")
+                        conversationViewModel.sendMessage(conversation: conversation, text: messageText, senderID: Auth.auth().currentUser?.uid ?? "")
                         messageText = ""
                     }
                     .frame(minWidth: 50)
@@ -104,13 +106,16 @@ struct ChatView: View {
                     .padding(.trailing)
                 }
                 .sheet(isPresented: $showChatDetailView) {
-                    ChatDetailView(conversation: conversation, viewModel: viewModel)
+                    ChatDetailView(conversation: conversation)
+                        .environmentObject(tripDetailViewModel)
+                        .environmentObject(mapViewModel)
+                        .environmentObject(conversationViewModel)
                 }
             }
         }
         .onAppear {
-            viewModel.fetchMessages(conversationCustomID: conversation.id)
-            print(1,viewModel.messages)
+            conversationViewModel.fetchMessages(conversationCustomID: conversation.id)
+            print(1,conversationViewModel.messages)
         }
     }
 }

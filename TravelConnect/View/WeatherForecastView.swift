@@ -27,7 +27,7 @@ struct WeatherForecastView: View {
             }
         }
         .onAppear {
-            viewModel.getWeatherForecastData(city: city)
+            viewModel.getWeather(city: city)
         }
     }
 }

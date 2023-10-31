@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct TripListView: View {
-    @EnvironmentObject var tripDetailViewModel:TripDetailViewModel
-    @EnvironmentObject var mapViewModel:MapViewModel
+    @EnvironmentObject var tripDetailViewModel: TripDetailViewModel
+    @EnvironmentObject var mapViewModel: MapViewModel
+    @EnvironmentObject var conversationViewModel: ConversationsViewModel
+    @EnvironmentObject var authViewModel: AuthViewModel
     @Environment(\.managedObjectContext) private var context
     var body: some View {
         NavigationStack{
@@ -90,6 +92,8 @@ struct TripListView: View {
                 TripDetailView(trip:trip, isEditingMode:false)
                     .environmentObject(tripDetailViewModel)
                     .environmentObject(mapViewModel)
+                    .environmentObject(conversationViewModel)
+                    .environmentObject(authViewModel)
             }
             .navigationTitle("Route Gallery")
             .navigationBarTitleDisplayMode(.inline)

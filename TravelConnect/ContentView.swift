@@ -15,6 +15,8 @@ struct ContentView: View {
     //MARK: - CoreData Singlton
     @ObservedObject var tripDetailViewModel:TripDetailViewModel = TripDetailViewModel()
     @ObservedObject var mapViewModel:MapViewModel = MapViewModel()
+    @ObservedObject var conversationViewModel: ConversationsViewModel = ConversationsViewModel(authViewModel: AuthViewModel())
+    @ObservedObject var authViewModel: AuthViewModel = AuthViewModel()
     let persistenceController = PersistenceController.shared
     
 
@@ -23,7 +25,11 @@ struct ContentView: View {
         TabView {
             // Tab 1 - Conversations
             NavigationView {
-                ConversationsListView(viewModel: ConversationsViewModel(authViewModel: viewModel))
+                ConversationsListView()
+                    .environmentObject(tripDetailViewModel)
+                    .environmentObject(mapViewModel)
+                    .environmentObject(conversationViewModel)
+                    .environmentObject(authViewModel)
             }
             .tabItem {
                 Label("Chats", systemImage: "bubble.right")
@@ -34,6 +40,8 @@ struct ContentView: View {
                 TripListView()
                     .environmentObject(tripDetailViewModel)
                     .environmentObject(mapViewModel)
+                    .environmentObject(conversationViewModel)
+                    .environmentObject(authViewModel)
                     .environment(\.managedObjectContext, persistenceController.container.viewContext)
             }
             .tabItem {

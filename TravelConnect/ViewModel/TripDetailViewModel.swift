@@ -38,14 +38,29 @@ class TripDetailViewModel:ObservableObject {
         currentViewingTrip = Trip()
     }
     
+    func hasConversationLinked(trip: Trip) -> Bool {
+        print("Trip's conversationID is: \(String(describing: trip.conversationID))")
+        
+        if trip.conversationID != nil {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    
     func fetchAllTrips(context:NSManagedObjectContext){
         let tripRecords = persistenceController.fetchAllRouteRecords(context: context)
         var trips:[Trip] = []
         for tripRecord in tripRecords{
             var trip = Trip()
+            trip.id = tripRecord.id!
             trip.type = tripRecord.type!
             trip.date = tripRecord.date!
             trip.tripInfo = tripRecord.tripInfo!
+            if let conversationID = tripRecord.conversationID {
+                trip.conversationID = tripRecord.conversationID!
+            }
             var placeOfInterest:[PlaceOfInterest] = []
             if let placeOfInterestSet = tripRecord.placeOfInterest as? Set<PlaceOfInterestRecord>{
                 for placeRecord in placeOfInterestSet {
@@ -65,8 +80,26 @@ class TripDetailViewModel:ObservableObject {
             trip.topImage = tripRecord.topImage!
             trips.append(trip)
         }
-        allTrips = trips
+        self.allTrips = trips
     }
+    
+    // Function that saves the current converation's ID to the selected trip
+    // by referencing the tripid with the coredata trip id.
+    func updateTripWithConversationID(tripID: UUID, conversationID: String, context: NSManagedObjectContext) {
+        let fetchRequest: NSFetchRequest<TripRecord> = TripRecord.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %@", tripID as CVarArg)
+
+        if let tripToUpdate = try? context.fetch(fetchRequest).first {
+            print("Found trip to update. \(tripID)")
+            tripToUpdate.conversationID = conversationID
+            try? context.save()
+            print("Trip updated with conversationID. \(conversationID)")
+        } else {
+            print("Trip not found.")
+        }
+    }
+
+
     
     func deleteTrip(context:NSManagedObjectContext,trip:Trip){
         persistenceController.deleteTripRecord(trip: trip, context: context)

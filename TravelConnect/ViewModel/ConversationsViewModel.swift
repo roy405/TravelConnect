@@ -58,6 +58,25 @@ class ConversationsViewModel: ObservableObject {
             self.conversations = fetchedConversations
         }
     }
+    
+    func fetchConversationByTrip(forTripID tripID: String, completion: @escaping (Conversation?) -> Void) {
+        // Assuming you store conversations in a collection named "conversations"
+        let db = Firestore.firestore()
+        db.collection("conversations").whereField("tripID", isEqualTo: tripID).getDocuments { (querySnapshot, error) in
+            guard let documents = querySnapshot?.documents, !documents.isEmpty else {
+                completion(nil)
+                return
+            }
+            // Here, I'm taking the first document, but you might want to handle it differently if there can be more than one
+            let document = documents[0]
+            let documentID = document.documentID
+            let documentData = document.data()
+            let conversation = Conversation(documentID: documentID, documentData: documentData)
+            completion(conversation)
+        }
+    }
+
+
 
     
     // Fetches messages of a conversation
@@ -219,6 +238,33 @@ class ConversationsViewModel: ObservableObject {
             completion(.success(fullName))
         }
     }
+    // Function to update the current conversation with a trip id if decided to link to a trip
+    func updateConversationWithTripIDUsingInternalID(internalID: String, tripID: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        // Getting reference to the "conversations" collection
+        let conversationsRef = db.collection("conversations")
+        // Fetch conversations with matching internal ID
+        conversationsRef.whereField("id", isEqualTo: internalID).getDocuments { (snapshot, error) in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            guard let snapshot = snapshot, !snapshot.documents.isEmpty else {
+                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No matching conversation found"])))
+                return
+            }
+            let conversationDoc = snapshot.documents[0]
+            // Update the tripID field of the fetched conversation
+            conversationDoc.reference.updateData(["tripID": tripID]) { error in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(()))
+                }
+            }
+        }
+    }
+
+
     
     // Checks if a conversation already exists with the given member emails.
     func doesConversationExist(with emails: [String], completion: @escaping (Result<Bool, Error>) -> Void) {

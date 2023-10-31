@@ -65,6 +65,8 @@
 		1CBEB2912AEF5E53005669EC /* LoadingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBEB2902AEF5E53005669EC /* LoadingScreen.swift */; };
 		1CBEB2972AEFEB94005669EC /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBEB2962AEFEB94005669EC /* AppError.swift */; };
 		1CBEB2992AEFFCF0005669EC /* ChatDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBEB2982AEFFCF0005669EC /* ChatDetailView.swift */; };
+		1CBEB29D2AF0C5BC005669EC /* TripSelectListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBEB29C2AF0C5BC005669EC /* TripSelectListView.swift */; };
+		1CBEB29F2AF0FFA5005669EC /* ConversationSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBEB29E2AF0FFA5005669EC /* ConversationSelectionView.swift */; };
 		1CDB07DE2AEA974A002A5EEA /* Conversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDB07DD2AEA974A002A5EEA /* Conversation.swift */; };
 		1CDB07E02AEA979D002A5EEA /* ConversationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDB07DF2AEA979D002A5EEA /* ConversationsViewModel.swift */; };
 		1CDB07E22AEA9832002A5EEA /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDB07E12AEA9832002A5EEA /* Message.swift */; };
@@ -115,6 +117,8 @@
 		1CBEB2902AEF5E53005669EC /* LoadingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingScreen.swift; sourceTree = "<group>"; };
 		1CBEB2962AEFEB94005669EC /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 		1CBEB2982AEFFCF0005669EC /* ChatDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatDetailView.swift; sourceTree = "<group>"; };
+		1CBEB29C2AF0C5BC005669EC /* TripSelectListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSelectListView.swift; sourceTree = "<group>"; };
+		1CBEB29E2AF0FFA5005669EC /* ConversationSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationSelectionView.swift; sourceTree = "<group>"; };
 		1CDB07DD2AEA974A002A5EEA /* Conversation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conversation.swift; sourceTree = "<group>"; };
 		1CDB07DF2AEA979D002A5EEA /* ConversationsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsViewModel.swift; sourceTree = "<group>"; };
 		1CDB07E12AEA9832002A5EEA /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
@@ -267,6 +271,8 @@
 				EEDD89412AF03C180051A6B9 /* TripListView.swift */,
 				EEDD89482AF03C290051A6B9 /* ImageGalleryView.swift */,
 				EEDD89492AF03C290051A6B9 /* ItemLookAroundView.swift */,
+				1CBEB29C2AF0C5BC005669EC /* TripSelectListView.swift */,
+				1CBEB29E2AF0FFA5005669EC /* ConversationSelectionView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -436,12 +442,14 @@
 				1CBEB2732AECE1A9005669EC /* UserProfileViewModel.swift in Sources */,
 				1CDB07E82AEB21BD002A5EEA /* NewConversationView.swift in Sources */,
 				1CB3BFE82ADF9BE9006A6294 /* ContentView.swift in Sources */,
+				1CBEB29F2AF0FFA5005669EC /* ConversationSelectionView.swift in Sources */,
 				1CB78F602AE42A150052882A /* LoginView.swift in Sources */,
 				1CBEB2912AEF5E53005669EC /* LoadingScreen.swift in Sources */,
 				EEDD89372AF03B230051A6B9 /* TranvelConnectDB.xcdatamodeld in Sources */,
 				1CDB07DE2AEA974A002A5EEA /* Conversation.swift in Sources */,
 				EEDD89462AF03C180051A6B9 /* TripListView.swift in Sources */,
 				1CB3C0042ADF9EEC006A6294 /* User.swift in Sources */,
+				1CBEB29D2AF0C5BC005669EC /* TripSelectListView.swift in Sources */,
 				1CBEB2992AEFFCF0005669EC /* ChatDetailView.swift in Sources */,
 				EEDD89432AF03C180051A6B9 /* PlaceOfInterestView.swift in Sources */,
 				1CBEB2822AEE731C005669EC /* RecommendationsView.swift in Sources */,

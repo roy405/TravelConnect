@@ -15,7 +15,7 @@ struct ErrorAlert: Identifiable {
 // View that displays a list of user conversations.
 struct ConversationsListView: View {
     // View model responsible for fetching and managing conversation-related data.
-    @ObservedObject var viewModel: ConversationsViewModel
+    @EnvironmentObject var conversationViewModel: ConversationsViewModel
     // State variable to hold the currently selected conversation.
     @State private var selectedConversation: Conversation?
     // State variable to control the visibility of the action sheet.
@@ -24,10 +24,17 @@ struct ConversationsListView: View {
     @State private var showCreateConversationModal = false
     // Error alert state variable
     @State private var errorAlert: ErrorAlert?
-
+    // Environemnt Object for Trip View Model
+    @EnvironmentObject var tripDetailViewModel: TripDetailViewModel
+    @EnvironmentObject var mapViewModel: MapViewModel
+    
     var body: some View {
-        List(viewModel.conversations) { conversation in
-            NavigationLink(destination: ChatView(viewModel: viewModel, conversation: conversation)) {
+        List(conversationViewModel.conversations) { conversation in
+            NavigationLink(destination: ChatView(conversation: conversation)
+                .environmentObject(tripDetailViewModel)
+                .environmentObject(mapViewModel)
+                .environmentObject(conversationViewModel)
+            ) {
                 HStack(spacing: 15) {
                     // Display a circle avatar with the initial of the conversation display name.
                     Circle()
@@ -42,26 +49,26 @@ struct ConversationsListView: View {
                     Text(conversation.displayName)
                         .font(.headline)
                         .padding(.vertical)
-
+                    
                 }
                 .background(
                     // Handle tap actions on the conversation.
                     Rectangle().fill(Color.clear)
-                    .onTapGesture {
-                        self.selectedConversation = conversation
-                        if conversation.memberEmails.count > 2 {
-                            self.showActionSheet = true
+                        .onTapGesture {
+                            self.selectedConversation = conversation
+                            if conversation.memberEmails.count > 2 {
+                                self.showActionSheet = true
+                            }
                         }
-                    }
                 )
             }
-//            Divider() // Separate each conversation with a divider.
+            //            Divider() // Separate each conversation with a divider.
         }
         .listStyle(.plain)
         .onAppear { // Fetch conversations when the view appears.
-            if let user = viewModel.authViewModel.currentUserEmail {
+            if let user = conversationViewModel.authViewModel.currentUserEmail {
                 print(user)
-                viewModel.fetchConversations(email: user)
+                conversationViewModel.fetchConversations(email: user)
             }
         }
         // Define the action sheet for conversation options.
@@ -72,7 +79,7 @@ struct ConversationsListView: View {
                 },
                 .default(Text("Convert to Group")) {
                     if let conversation = self.selectedConversation {
-                        viewModel.convertToGroup(conversation: conversation) { result in
+                        conversationViewModel.convertToGroup(conversation: conversation) { result in
                             switch result {
                             case .success():
                                 print("Successfully converted to group.")
@@ -94,13 +101,13 @@ struct ConversationsListView: View {
         .navigationBarTitle("Conversations")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarItems(trailing:
-            Button(action: {
-                self.showCreateConversationModal = true
-            }) {
-                Image(systemName: "plus")
-            }
+                                Button(action: {
+            self.showCreateConversationModal = true
+        }) {
+            Image(systemName: "plus")
+        }
             .sheet(isPresented: $showCreateConversationModal) {
-                NewConversationView(showModal: $showCreateConversationModal, viewModel: viewModel)
+                NewConversationView(showModal: $showCreateConversationModal, viewModel: conversationViewModel)
             }
         )
     }

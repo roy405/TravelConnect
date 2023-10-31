@@ -80,7 +80,7 @@ struct NewConversationView: View {
                     
                     Spacer()
                     // Button to initiate the creation of a new conversation.
-                    Button("Create Conversation") {
+                    Button("Create") {
                         if allEmailsValid {
                             let lowercasedEmails = emails.map { $0.value.lowercased() }
                             viewModel.startNewConversation(with: lowercasedEmails, isGroup: true) { result in
@@ -99,7 +99,7 @@ struct NewConversationView: View {
                     }
                     .disabled(!allEmailsValid)
                     .buttonStyle(PlainButtonStyle())
-                    .padding()
+                    .frame(width:UIScreen.main.bounds.width * 0.45, height: 50)
                     .background(allEmailsValid ? Color.green : Color.gray)
                     .foregroundColor(.white)
                     .cornerRadius(8)
